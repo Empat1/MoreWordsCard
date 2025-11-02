@@ -125,28 +125,28 @@ fun MyCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .graphicsLayer{
-                        if(stateRotationY == 180f){
+                    .graphicsLayer {
+                        if (stateRotationY == 180f) {
                             rotationY = 180f
                         }
                     }
             ) {
-                if(stateRotationY == 180f){
+                if (stateRotationY == 180f) {
                     Text(
                         text = word.translate,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
-                }else{
+                } else {
 
-                Column {
-                    Text(
-                        text = word.text,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                    Column {
+                        Text(
+                            text = word.text,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
+                }
             }
         }
     }

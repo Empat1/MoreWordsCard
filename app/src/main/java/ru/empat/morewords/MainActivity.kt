@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.arkivanov.decompose.defaultComponentContext
 import ru.empat.morewords.presentation.root.DefaultRootComponent
+import ru.empat.morewords.presentation.root.RootContent
 import ru.empat.morewords.ui.theme.MoreWordsTheme
 import javax.inject.Inject
 
@@ -27,13 +29,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            MoreWordsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CardScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            RootContent(component = rootComponentFactory.create(defaultComponentContext()))
         }
     }
 }
