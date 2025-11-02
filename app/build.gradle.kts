@@ -51,6 +51,10 @@ dependencies {
     implementation(libs.decompose.core)
     implementation(libs.decompose.jetpack)
 
+    implementation(libs.mvikotlin.main)
+    implementation(libs.mvikotlin.core)
+    implementation(libs.mvikotlin.coroutines)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
