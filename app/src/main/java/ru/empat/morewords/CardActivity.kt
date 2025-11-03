@@ -39,116 +39,12 @@ fun CardScreen(modifier: Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        MyCard(
-            modifier = modifier,
-            word = Word(1, 1, "Word", "Слово")
-        )
+//        MyCard(
+//            modifier = modifier,
+//            word = Word(1, 1, "Word", "Слово")
+//        )
     }
 }
 
-@Composable
-fun MyCard(
-    modifier: Modifier,
-    word: Word,
-    onRight: (() -> Unit)? = null,
-    onLeft: (() -> Unit)? = null
-) {
 
-    val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == StartToEnd) onRight
-            else if (it == EndToStart) onLeft
-            it != StartToEnd
-        }
-    )
-
-    var hideHint by remember { mutableStateOf(false) }
-
-    var hide by rememberSaveable { mutableStateOf(false) }
-
-    val stateRotationY by animateFloatAsState(
-        targetValue = if (hide) 180f else 0f,
-        animationSpec = tween(durationMillis = 1000)
-    )
-
-    SwipeToDismissBox(
-        state = swipeToDismissBoxState,
-        enableDismissFromStartToEnd = hide,
-        enableDismissFromEndToStart = hide,
-        modifier = modifier
-            .padding(16.dp),
-        backgroundContent = {
-            when (swipeToDismissBoxState.dismissDirection) {
-                StartToEnd -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Text(
-                            text = "Знаю",
-                            color = Green
-                        )
-                    }
-                }
-                EndToStart -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.TopEnd
-                    ) {
-                        Text(
-                            text = "Не знаю",
-                            color = Red
-                        )
-                    }
-                }
-                Settled -> {}
-            }
-        }
-    ) {
-        Card(
-            modifier = Modifier
-                .size(320.dp, 480.dp)
-                .graphicsLayer {
-                    rotationY = stateRotationY
-                    cameraDistance = 12f * density
-                }
-                .clickable {
-                    hide = true
-                },
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
-            )
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        if (stateRotationY == 180f) {
-                            rotationY = 180f
-                        }
-                    }
-            ) {
-                if (stateRotationY == 180f) {
-                    Text(
-                        text = word.translate,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-
-                    Column {
-                        Text(
-                            text = word.text,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
