@@ -26,7 +26,7 @@ interface LearnCardStore : Store<Intent, State, Label> {
     )
 
     class LearnCardStoreFactory @Inject constructor(
-        private val factory: StoreFactory,
+        private val factory: StoreFactory
         //todo usecase
     ) {
 

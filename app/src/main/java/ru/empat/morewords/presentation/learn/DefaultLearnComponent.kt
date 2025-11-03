@@ -22,15 +22,12 @@ class DefaultLearnComponent @AssistedInject constructor(
     override val model: StateFlow<LearnCardStore.State> = store.stateFlow
 
     override fun onClick() {
-        TODO("Not yet implemented")
     }
 
     override fun onRightSwipe() {
-        TODO("Not yet implemented")
     }
 
     override fun onLeftSwipe() {
-        TODO("Not yet implemented")
     }
 
     @AssistedFactory
