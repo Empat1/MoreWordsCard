@@ -5,16 +5,20 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.parcelize.Parcelize
 import ru.empat.morewords.domain.entity.Word
+import ru.empat.morewords.presentation.education.DefaultEducationComponent
 import ru.empat.morewords.presentation.learn.DefaultLearnComponent
+import ru.empat.morewords.presentation.root.RootComponent.Child.*
 
 class DefaultRootComponent @AssistedInject constructor(
     private val learnCardComponentFactory : DefaultLearnComponent.Factory,
+    private val educationComponentFactory : DefaultEducationComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext{
 
@@ -22,7 +26,7 @@ class DefaultRootComponent @AssistedInject constructor(
 
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
-        initialConfiguration = Config.CardLean,
+        initialConfiguration = Config.EducationLearn,
         handleBackButton = true,
         childFactory = ::child
     )
@@ -37,7 +41,23 @@ class DefaultRootComponent @AssistedInject constructor(
                     {},
                     componentContext
                 )
-                RootComponent.Child.LearnCard(component)
+                LearnCard(component)
+            }
+
+            Config.EducationLearn -> {
+                val component = educationComponentFactory.crate(
+                    componentContext,
+                    onShowList = {
+                        println()
+                    },
+                    clickLearn = {
+                        navigation.push(Config.CardLean)
+                    },
+                    addWord = {
+                        println()
+                    }
+                )
+                Education(component)
             }
         }
     }
@@ -45,6 +65,8 @@ class DefaultRootComponent @AssistedInject constructor(
     sealed interface Config : Parcelable {
         @Parcelize
         data object CardLean : Config
+        @Parcelize
+        data object  EducationLearn : Config
     }
     @AssistedFactory
     interface Factory {
