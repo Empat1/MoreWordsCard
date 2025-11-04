@@ -27,8 +27,12 @@ class DefaultEducationComponent @AssistedInject constructor(
         scope.launch {
             store.labels.collect{
                 when(it) {
-                    EducationStore.Label.ClickAddCard -> TODO()
-                    EducationStore.Label.ClickGetList -> TODO()
+                    EducationStore.Label.ClickAddCard -> {
+                        //TODO
+                    }
+                    EducationStore.Label.ClickGetList -> {
+                        onShowList
+                    }
                     EducationStore.Label.ClickLearn -> {
                         clickLearn()
                     }

@@ -12,3 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val Red = Color.Red
 val Green = Color.Green
+
+val MyRed = Color(0xFFF55283)
+val Yellow = Color(0xFFFDC83A)
