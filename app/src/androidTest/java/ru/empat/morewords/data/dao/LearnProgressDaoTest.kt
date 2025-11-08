@@ -11,10 +11,10 @@ import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
 import ru.empat.morewords.data.room.dao.LearnProgressDao
 import ru.empat.morewords.data.room.dao.WordDao
-import ru.empat.morewords.data.room.entity.Dictionary
-import ru.empat.morewords.data.room.entity.Language
-import ru.empat.morewords.data.room.entity.LearningProgressWord
-import ru.empat.morewords.data.room.entity.Word
+import ru.empat.morewords.data.room.entity.DictionaryModel
+import ru.empat.morewords.data.room.entity.LanguageModel
+import ru.empat.morewords.data.room.entity.LearningProgressWordModel
+import ru.empat.morewords.data.room.entity.WordModel
 
 class LearnProgressDaoTest {
 
@@ -42,27 +42,27 @@ class LearnProgressDaoTest {
 
     @Test
     fun insert() {
-        val language = Language(1, "Английски", "En")
-        languageDao.insert(language)
+        val languageModel = LanguageModel(1, "Английски", "En")
+        languageDao.insert(languageModel)
 
-        val dictionary = Dictionary(1, "User", 1)
-        dictionaryDao.addDictionaty(dictionary)
+        val dictionaryModel = DictionaryModel(1, "User", 1)
+        dictionaryDao.addDictionaty(dictionaryModel)
 
-        val word = Word(1, 1, "Hello", "Привет")
-        wordDao.insertWord(word)
+        val wordModel = WordModel(1, 1, "Hello", "Привет")
+        wordDao.insertWord(wordModel)
 
-        val learningProgressWord = LearningProgressWord(1, 1, 0, 1 , 2)
-        learnDao.insert(learningProgressWord)
+        val learningProgressWordModel = LearningProgressWordModel(1, 1, 0, 1 , 2)
+        learnDao.insert(learningProgressWordModel)
 
         val actual = learnDao.getLearn(1)
 
-        Assert.assertEquals(learningProgressWord, actual)
+        Assert.assertEquals(learningProgressWordModel, actual)
     }
 
     @Test
     fun update() {
         insert()
-        val learn = LearningProgressWord(1 , 1, 4, 4, 5)
+        val learn = LearningProgressWordModel(1 , 1, 4, 4, 5)
         learnDao.edit(learn)
 
         Assert.assertEquals(learn, learnDao.getLearn(1))

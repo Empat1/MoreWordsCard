@@ -2,7 +2,6 @@ package ru.empat.morewords.data.dao
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
 import org.junit.After
 import org.junit.Assert
@@ -11,8 +10,8 @@ import org.junit.Test
 import ru.empat.morewords.data.TestDatabase
 import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
-import ru.empat.morewords.data.room.entity.Dictionary
-import ru.empat.morewords.data.room.entity.Language
+import ru.empat.morewords.data.room.entity.DictionaryModel
+import ru.empat.morewords.data.room.entity.LanguageModel
 
 class DictionaryDaoTest {
     private lateinit var database: TestDatabase
@@ -35,24 +34,24 @@ class DictionaryDaoTest {
 
     @Test
     fun insertAndFindTest(){
-        val language = Language(1, "Английски", "En")
-        languageDao.insert(language)
+        val languageModel = LanguageModel(1, "Английски", "En")
+        languageDao.insert(languageModel)
 
-        val dictionary = Dictionary(1, "User", 1)
-        dictionaryDao.addDictionaty(dictionary)
+        val dictionaryModel = DictionaryModel(1, "User", 1)
+        dictionaryDao.addDictionaty(dictionaryModel)
 
         val actual = dictionaryDao.getDictionary(1)
 
-        Assert.assertEquals(dictionary, actual)
+        Assert.assertEquals(dictionaryModel, actual)
     }
 
     @Test
     fun insertWithoutLanguage(){
-        val dictionary = Dictionary(1, "User", 1)
+        val dictionaryModel = DictionaryModel(1, "User", 1)
 
 
         val actual = try {
-            dictionaryDao.addDictionaty(dictionary)
+            dictionaryDao.addDictionaty(dictionaryModel)
             false
         } catch (e: SQLiteConstraintException){
             true

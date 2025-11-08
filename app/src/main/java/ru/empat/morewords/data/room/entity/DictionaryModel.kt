@@ -5,20 +5,18 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "word",
+    tableName = "dictionary",
     foreignKeys = [
         ForeignKey(
-            entity = Dictionary::class,
+            entity = LanguageModel::class,
             parentColumns = ["id"],
-            childColumns = ["dictionaryId"],
-            onDelete = ForeignKey.CASCADE
+            childColumns = ["languageId"],
         )
     ]
 )
-data class Word(
+data class DictionaryModel(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val dictionaryId: Long,
-    val text: String,
-    val translation: String
+    val id: Long = 0,
+    val name: String,
+    val languageId: Long,
 )

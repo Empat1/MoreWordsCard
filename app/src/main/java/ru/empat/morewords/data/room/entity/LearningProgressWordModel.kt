@@ -10,14 +10,14 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["wordId"])],
     foreignKeys = [
         ForeignKey(
-            entity = Word::class,
+            entity = WordModel::class,
             parentColumns = ["id"],
             childColumns = ["wordId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class LearningProgressWord(
+data class LearningProgressWordModel(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val wordId: Long,

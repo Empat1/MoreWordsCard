@@ -1,4 +1,4 @@
-package ru.empat.morewords.data
+package ru.empat.morewords.data.room
 
 import android.content.Context
 import androidx.room.Database
@@ -18,35 +18,35 @@ import ru.empat.morewords.data.room.entity.WordModel
     version = 1,
     exportSchema = false
 )
-abstract class TestDatabase : RoomDatabase() {
+abstract class UserDatabase : RoomDatabase() {
+
     abstract fun wordDao(): WordDao
-
     abstract fun languageDao() : LanguageDao
-
     abstract fun dictionaryDao() : DictionaryDao
-
     abstract fun learnProgressDao() : LearnProgressDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: TestDatabase? = null
+        const val DATABASE_NAME = "user_database"
 
-        fun getInstance(context: Context): TestDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.inMemoryDatabaseBuilder(
-                    context.applicationContext,
-                    TestDatabase::class.java
+        private var INSTANCE : UserDatabase? = null
+
+        private val LOCK = Any()
+
+        fun newInstance(context: Context): UserDatabase {
+            INSTANCE?.let { return it }
+
+            synchronized(LOCK) {
+                INSTANCE?.let { return it }
+
+                val database = Room.databaseBuilder(
+                    context,
+                    UserDatabase::class.java,
+                    DATABASE_NAME
                 ).build()
-                INSTANCE = instance
-                instance
+
+                INSTANCE = database
+                return database
             }
         }
-
-        fun getInMemoryInstance(context: Context) =
-            Room.inMemoryDatabaseBuilder(
-                context,
-                TestDatabase::class.java
-            ).allowMainThreadQueries().build()
-
     }
 }

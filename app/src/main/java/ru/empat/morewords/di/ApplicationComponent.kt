@@ -8,7 +8,8 @@ import ru.empat.morewords.MainActivity
 @ApplicationScope
 @Component(
     modules = [
-        PresentationModule::class
+        PresentationModule::class,
+        DataModule::class
     ]
 )
 interface ApplicationComponent {

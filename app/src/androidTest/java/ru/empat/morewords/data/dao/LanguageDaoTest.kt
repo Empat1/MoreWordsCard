@@ -1,7 +1,6 @@
 package ru.empat.morewords.data.dao
 
 import android.content.Context
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import org.junit.After
 import org.junit.Assert
@@ -9,7 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import ru.empat.morewords.data.TestDatabase
 import ru.empat.morewords.data.room.dao.LanguageDao
-import ru.empat.morewords.data.room.entity.Language
+import ru.empat.morewords.data.room.entity.LanguageModel
 
 class LanguageDaoTest {
 
@@ -31,10 +30,10 @@ class LanguageDaoTest {
 
     @Test
     fun insertAndFindTest(){
-        val language = Language(1, "Английски", "En")
-        languageDao.insert(language)
+        val languageModel = LanguageModel(1, "Английски", "En")
+        languageDao.insert(languageModel)
 
-        val actual: Language = languageDao.getLanguage(1)
+        val actual: LanguageModel = languageDao.getLanguage(1)
 
         Assert.assertEquals(actual, actual)
     }

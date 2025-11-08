@@ -5,23 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import ru.empat.morewords.data.room.entity.Word
+import ru.empat.morewords.data.room.entity.WordModel
 
 @Dao
 interface WordDao {
 
     @Query("SELECT * FROM word")
-    fun getAllWords() : List<Word>
+    fun getAllWords() : List<WordModel>
 
     @Query("SELECT * FROM word WHERE id = :id")
-    fun getWordById(id: Long): Word?
+    fun getWordById(id: Long): WordModel?
 
     @Insert
-    fun insertWord(word: Word): Long
+    fun insertWord(wordModel: WordModel): Long
 
     @Update
-    fun updateWord(word: Word)
+    fun updateWord(wordModel: WordModel)
 
     @Delete
-    fun deleteWord(word: Word)
+    fun deleteWord(wordModel: WordModel)
 }
