@@ -1,6 +1,7 @@
 package ru.empat.morewords.domain.entity
 
 data class Language(
-    var id :Int,
-    var name:String
+    var id :Long,
+    var name:String,
+    val code: String
 )

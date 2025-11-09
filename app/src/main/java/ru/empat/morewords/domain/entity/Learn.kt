@@ -1,11 +1,11 @@
 package ru.empat.morewords.domain.entity
 
-import java.sql.Date
+import java.util.Date
 
 data class Learn(
-    var id: Int,
-    var userId: Int,
-    var wordId: Int,
-    var learnGoodRepetition: Int,
-    var learnLastRepetition: Date
+    var id: Long,
+    var userId: Long,
+    val knowledgeLevel: Int = 0,
+    var learnGoodRepetition: Date,
+    var learnLastRepetition: Date?
 )

@@ -1,7 +1,7 @@
 package ru.empat.morewords.domain.entity
 
 data class Dictionary(
-    var id: Int,
-    var language: Int,
+    var id: Long,
+    var language: Long,
     var name: String
 )
