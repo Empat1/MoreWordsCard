@@ -2,6 +2,8 @@ package ru.empat.morewords.data.dao
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -16,7 +18,7 @@ class LanguageDaoTest {
     private lateinit var languageDao: LanguageDao
 
     @Before
-    fun setup(){
+    fun setup() = runTest{
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = TestDatabase.getInMemoryInstance(context)
 
@@ -29,11 +31,11 @@ class LanguageDaoTest {
     }
 
     @Test
-    fun insertAndFindTest(){
+    fun insertAndFindTest() = runTest{
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 
-        val actual: LanguageModel = languageDao.getLanguage(1)
+        val actual: LanguageModel = languageDao.getLanguage(1).first()
 
         Assert.assertEquals(actual, actual)
     }

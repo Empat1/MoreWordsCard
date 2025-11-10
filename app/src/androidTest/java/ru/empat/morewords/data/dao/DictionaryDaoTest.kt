@@ -3,6 +3,7 @@ package ru.empat.morewords.data.dao
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -33,7 +34,7 @@ class DictionaryDaoTest {
     }
 
     @Test
-    fun insertAndFindTest(){
+    fun insertAndFindTest() = runTest{
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 
@@ -46,9 +47,8 @@ class DictionaryDaoTest {
     }
 
     @Test
-    fun insertWithoutLanguage(){
+    fun insertWithoutLanguage() = runTest{
         val dictionaryModel = DictionaryModel(1, "User", 1)
-
 
         val actual = try {
             dictionaryDao.addDictionaty(dictionaryModel)

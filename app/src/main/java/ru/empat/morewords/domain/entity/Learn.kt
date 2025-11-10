@@ -4,7 +4,7 @@ import java.util.Date
 
 data class Learn(
     var id: Long,
-    var userId: Long,
+    var wordId: Long,
     val knowledgeLevel: Int = 0,
     var learnGoodRepetition: Date,
     var learnLastRepetition: Date?

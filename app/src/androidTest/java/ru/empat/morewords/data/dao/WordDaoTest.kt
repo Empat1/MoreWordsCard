@@ -2,6 +2,8 @@ package ru.empat.morewords.data.dao
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -36,7 +38,7 @@ class WordDaoTest {
     }
 
     @Test
-    fun insert(){
+    fun insert() = runTest {
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 
@@ -46,7 +48,7 @@ class WordDaoTest {
         val wordModel = WordModel(1 , 1, "Hello" , "Привет")
         wordDao.insertWord(wordModel)
 
-        val actual: WordModel = wordDao.getWordById(1)!!
+        val actual: WordModel = wordDao.getWordById(1).first()!!
 
         Assert.assertEquals(wordModel, actual)
     }

@@ -2,6 +2,7 @@ package ru.empat.morewords.data.dao
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -41,7 +42,7 @@ class LearnProgressDaoTest {
     }
 
     @Test
-    fun insert() {
+    fun insert() = runTest {
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 
@@ -60,7 +61,7 @@ class LearnProgressDaoTest {
     }
 
     @Test
-    fun update() {
+    fun update() = runTest {
         insert()
         val learn = LearningProgressWordModel(1 , 1, 4, 4, 5)
         learnDao.edit(learn)
@@ -69,7 +70,7 @@ class LearnProgressDaoTest {
     }
 
     @Test
-    fun delete() {
+    fun delete() = runTest{
         insert()
         learnDao.delete(1)
 

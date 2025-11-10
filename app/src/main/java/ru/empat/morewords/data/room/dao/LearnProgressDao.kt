@@ -4,20 +4,21 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import ru.empat.morewords.data.room.entity.LearningProgressWordModel
 
 @Dao
 interface LearnProgressDao {
 
     @Update
-    fun edit(learningProgressWordModel: LearningProgressWordModel)
+    suspend fun edit(learningProgressWordModel: LearningProgressWordModel)
 
     @Insert
-    fun insert(learningProgressWordModel: LearningProgressWordModel)
+    suspend fun insert(learningProgressWordModel: LearningProgressWordModel)
 
     @Query("SELECT * FROM learning_progress WHERE id = :id")
-    fun getLearn(id: Long): LearningProgressWordModel
+    fun getLearn(id: Long): Flow<LearningProgressWordModel>
 
     @Query("DELETE FROM learning_progress WHERE id = :id")
-    fun delete(id: Long)
+    suspend fun delete(id: Long)
 }
