@@ -47,7 +47,7 @@ class WorkRepositoryImpl @Inject constructor(
         return wordDao.getWordByDictionary(id).map{ wordModels -> wordModels.map{it.toWord()}}
     }
 
-    override fun getLanguages(id: Long): Flow<List<Language>> {
+    override fun getAllLanguages(): Flow<List<Language>> {
         return languageDao.getAllLanguages()
             .map { languageModel -> languageModel.map { it.toLanguage() } }
     }

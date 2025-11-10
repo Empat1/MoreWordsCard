@@ -16,7 +16,7 @@ interface WordRepository {
 
     fun getDictionaryWorld(id: Long): Flow<List<Word>>
 
-    fun getLanguages(id: Long) : Flow<List<Language>>
+    fun getAllLanguages() : Flow<List<Language>>
 
     suspend fun addLanguages(language: Language)
 

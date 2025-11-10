@@ -1,10 +1,6 @@
 package ru.empat.morewords.presentation.education
 
-import android.content.res.Resources
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +10,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -32,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.empat.morewords.R
+import ru.empat.morewords.domain.entity.Language
 import ru.empat.morewords.domain.entity.Word
-import ru.empat.morewords.ui.theme.Yellow
 
 @Composable
 fun EducationScreen(component: EducationComponent) {
@@ -41,7 +39,7 @@ fun EducationScreen(component: EducationComponent) {
 
     Scaffold(
         containerColor = Color.Transparent,
-        topBar = { Toolbar() }
+        topBar = { Toolbar(state.language) }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -49,12 +47,12 @@ fun EducationScreen(component: EducationComponent) {
                 .padding(padding)
         ) {
 
-            when (val currentState = state) {
-                is EducationStore.State.Error -> {}
-                EducationStore.State.Init -> {}
-                EducationStore.State.Loading -> {}
-                is EducationStore.State.Loaded -> {
-                    Loaded(component, currentState)
+            when (val current = state.statisticState) {
+                is EducationStore.State.StatisticState.Error -> {}
+                EducationStore.State.StatisticState.Init -> {}
+                EducationStore.State.StatisticState.Loading -> {}
+                is EducationStore.State.StatisticState.Loaded -> {
+                    Loaded(component, current)
                 }
             }
         }
@@ -64,9 +62,22 @@ fun EducationScreen(component: EducationComponent) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar(){
+fun Toolbar(language: List<Language>){
     CenterAlignedTopAppBar(
-        title = {Text("Английский")},
+        title = {
+            if(language.isEmpty()) return@CenterAlignedTopAppBar
+
+            LazyColumn(
+
+            ) {
+                items(
+                    items = language,
+                    key = {it.id}
+                ) {
+                    Text("${it.code} ${it.name}")
+                }
+            }
+                },
         navigationIcon = {},
         actions = {},
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -79,7 +90,7 @@ fun Toolbar(){
 }
 
 @Composable
-fun Loaded(component: EducationComponent, state: EducationStore.State.Loaded) {
+fun Loaded(component: EducationComponent, state: EducationStore.State.StatisticState.Loaded) {
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -124,7 +135,7 @@ fun Loaded(component: EducationComponent, state: EducationStore.State.Loaded) {
 }
 
 @Composable
-fun StatisticItems (state : EducationStore.State.Loaded){
+fun StatisticItems (state : EducationStore.State.StatisticState.Loaded){
     Row (
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly

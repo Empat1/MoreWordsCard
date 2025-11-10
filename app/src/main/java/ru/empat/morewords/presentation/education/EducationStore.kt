@@ -1,10 +1,15 @@
 package ru.empat.morewords.presentation.education
 
+import androidx.room.util.copy
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.launch
+import ru.empat.morewords.domain.entity.Language
+import ru.empat.morewords.domain.usecase.GetLanguagesUseCase
 import ru.empat.morewords.presentation.education.EducationStore.Intent
 import ru.empat.morewords.presentation.education.EducationStore.Label
 import ru.empat.morewords.presentation.education.EducationStore.State
@@ -18,16 +23,22 @@ interface EducationStore : Store<Intent, State, Label>{
         data object ClickAddCard: Intent
     }
 
-    sealed interface State{
-        data object Init : State
-        data object Loading : State
-        data object Error : State
+    data class State(
+        val language: List<Language>,
+        val statisticState: StatisticState
+    ){
 
-        data class Loaded(
-            val wordForLearn: Int,
-            val wordForRepeat: Int,
-            val completeWord: Int
-        ) : State
+        sealed interface StatisticState {
+            data object Init : StatisticState
+            data object Loading : StatisticState
+            data object Error : StatisticState
+
+            data class Loaded(
+                val wordForLearn: Int,
+                val wordForRepeat: Int,
+                val completeWord: Int
+            ) : StatisticState
+        }
     }
 
     sealed interface Label {
@@ -38,14 +49,17 @@ interface EducationStore : Store<Intent, State, Label>{
 }
 
 class EducationStoreFactory @Inject constructor(
-    private val storeFactory: StoreFactory
-    //TODO usecase
+    private val storeFactory: StoreFactory,
+    private val getLanguageUseCase: GetLanguagesUseCase
 ) {
 
     fun create() : EducationStore =
         object : EducationStore, Store<Intent, State, Label> by storeFactory.create(
             name = "StoreFactory",
-            initialState = State.Loaded(1,2,3),
+            initialState = State(
+                emptyList(),
+                State.StatisticState.Loaded(1, 2, 3)
+            ),
             bootstrapper = BootstrapperImpl(),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -57,6 +71,10 @@ class EducationStoreFactory @Inject constructor(
             val wordForRepeat: Int,
             val completeWord: Int
         ) : Action
+
+        data class LanguagesLoaded(
+            val language: List<Language>
+        ) : Action
     }
 
     private sealed interface Msg {
@@ -65,10 +83,22 @@ class EducationStoreFactory @Inject constructor(
             val wordForRepeat: Int,
             val completeWord: Int
         ) : Msg
+
+        data class LanguageLoaded(
+            val list: List<Language>
+        ) : Msg
     }
 
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
+            scope.launch {
+//                val language = getLanguageUseCase
+//                dispatch(Action.LoadedLanguage(language))
+                getLanguageUseCase().collect {
+                    dispatch(Action.LanguagesLoaded(it))
+                }
+            }
+
             //todo loading from room
         }
     }
@@ -93,14 +123,27 @@ class EducationStoreFactory @Inject constructor(
             getState: () -> State
         ) {
             super.executeAction(action, getState)
-            //TODO this
+            when(action){
+                is Action.LanguagesLoaded -> {
+                    dispatch(Msg.LanguageLoaded(action.language))
+                }
+                else -> {}
+            }
         }
     }
 
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State = when (msg) {
             is Msg.Loaded -> {
-                State.Loaded(msg.wordForLearn, msg.wordForRepeat, msg.completeWord)
+                copy(statisticState = State.StatisticState.Loaded(
+                    msg.wordForLearn,
+                    msg.wordForRepeat,
+                    msg.completeWord,
+                ))
+            }
+
+            is Msg.LanguageLoaded -> {
+                copy(language = msg.list)
             }
         }
     }
