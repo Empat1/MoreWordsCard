@@ -17,10 +17,10 @@ import ru.empat.morewords.presentation.learn.DefaultLearnComponent
 import ru.empat.morewords.presentation.root.RootComponent.Child.*
 
 class DefaultRootComponent @AssistedInject constructor(
-    private val learnCardComponentFactory : DefaultLearnComponent.Factory,
-    private val educationComponentFactory : DefaultEducationComponent.Factory,
+    private val learnCardComponentFactory: DefaultLearnComponent.Factory,
+    private val educationComponentFactory: DefaultEducationComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
-) : RootComponent, ComponentContext by componentContext{
+) : RootComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -34,10 +34,10 @@ class DefaultRootComponent @AssistedInject constructor(
     private fun child(
         config: Config, componentContext: ComponentContext
     ): RootComponent.Child {
-        return when(config){
+        return when (config) {
             Config.CardLean -> {
                 val component = learnCardComponentFactory.create(
-                    word = Word(2, 2, "2" , "2"),
+                    word = Word(2, 2, "2", "2"),
                     {},
                     componentContext
                 )
@@ -65,9 +65,11 @@ class DefaultRootComponent @AssistedInject constructor(
     sealed interface Config : Parcelable {
         @Parcelize
         data object CardLean : Config
+
         @Parcelize
-        data object  EducationLearn : Config
+        data object EducationLearn : Config
     }
+
     @AssistedFactory
     interface Factory {
         fun create(

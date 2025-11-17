@@ -15,18 +15,18 @@ import ru.empat.morewords.presentation.education.EducationStore.Label
 import ru.empat.morewords.presentation.education.EducationStore.State
 import javax.inject.Inject
 
-interface EducationStore : Store<Intent, State, Label>{
+interface EducationStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
-        data object ClickLearn: Intent
-        data object ClickGetList: Intent
-        data object ClickAddCard: Intent
+        data object ClickLearn : Intent
+        data object ClickGetList : Intent
+        data object ClickAddCard : Intent
     }
 
     data class State(
         val language: List<Language>,
         val statisticState: StatisticState
-    ){
+    ) {
 
         sealed interface StatisticState {
             data object Init : StatisticState
@@ -42,9 +42,9 @@ interface EducationStore : Store<Intent, State, Label>{
     }
 
     sealed interface Label {
-        data object ClickLearn: Label
-        data object ClickGetList: Label
-        data object ClickAddCard: Label
+        data object ClickLearn : Label
+        data object ClickGetList : Label
+        data object ClickAddCard : Label
     }
 }
 
@@ -53,7 +53,7 @@ class EducationStoreFactory @Inject constructor(
     private val getLanguageUseCase: GetLanguagesUseCase
 ) {
 
-    fun create() : EducationStore =
+    fun create(): EducationStore =
         object : EducationStore, Store<Intent, State, Label> by storeFactory.create(
             name = "StoreFactory",
             initialState = State(
@@ -105,13 +105,15 @@ class EducationStoreFactory @Inject constructor(
 
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
-            when(intent){
+            when (intent) {
                 Intent.ClickAddCard -> {
                     publish(Label.ClickAddCard)
                 }
+
                 Intent.ClickGetList -> {
                     publish(Label.ClickGetList)
                 }
+
                 Intent.ClickLearn -> {
                     publish(Label.ClickLearn)
                 }
@@ -123,10 +125,11 @@ class EducationStoreFactory @Inject constructor(
             getState: () -> State
         ) {
             super.executeAction(action, getState)
-            when(action){
+            when (action) {
                 is Action.LanguagesLoaded -> {
                     dispatch(Msg.LanguageLoaded(action.language))
                 }
+
                 else -> {}
             }
         }
@@ -135,11 +138,13 @@ class EducationStoreFactory @Inject constructor(
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State = when (msg) {
             is Msg.Loaded -> {
-                copy(statisticState = State.StatisticState.Loaded(
-                    msg.wordForLearn,
-                    msg.wordForRepeat,
-                    msg.completeWord,
-                ))
+                copy(
+                    statisticState = State.StatisticState.Loaded(
+                        msg.wordForLearn,
+                        msg.wordForRepeat,
+                        msg.completeWord,
+                    )
+                )
             }
 
             is Msg.LanguageLoaded -> {

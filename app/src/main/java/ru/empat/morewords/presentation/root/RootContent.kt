@@ -8,14 +8,15 @@ import ru.empat.morewords.ui.theme.MoreWordsTheme
 
 @Composable
 fun RootContent(component: RootComponent) {
-    MoreWordsTheme{
+    MoreWordsTheme {
         Children(
             stack = component.stack
-        ){
+        ) {
             when (val instance = it.instance) {
                 is RootComponent.Child.LearnCard -> {
                     LearnCardContent(component = instance.component)
                 }
+
                 is RootComponent.Child.Education -> {
                     EducationScreen(component = instance.component)
                 }

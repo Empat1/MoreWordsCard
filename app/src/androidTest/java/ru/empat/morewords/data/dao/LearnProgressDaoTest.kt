@@ -23,7 +23,7 @@ class LearnProgressDaoTest {
     private lateinit var wordDao: WordDao
     private lateinit var languageDao: LanguageDao
     private lateinit var dictionaryDao: DictionaryDao
-    private lateinit var learnDao : LearnProgressDao
+    private lateinit var learnDao: LearnProgressDao
 
     @Before
     fun setup() {
@@ -52,7 +52,7 @@ class LearnProgressDaoTest {
         val wordModel = WordModel(1, 1, "Hello", "Привет")
         wordDao.insertWord(wordModel)
 
-        val learningProgressWordModel = LearningProgressWordModel(1, 1, 0, 1 , 2)
+        val learningProgressWordModel = LearningProgressWordModel(1, 1, 0, 1, 2)
         learnDao.insert(learningProgressWordModel)
 
         val actual = learnDao.getLearn(1)
@@ -63,14 +63,14 @@ class LearnProgressDaoTest {
     @Test
     fun update() = runTest {
         insert()
-        val learn = LearningProgressWordModel(1 , 1, 4, 4, 5)
+        val learn = LearningProgressWordModel(1, 1, 4, 4, 5)
         learnDao.edit(learn)
 
         Assert.assertEquals(learn, learnDao.getLearn(1))
     }
 
     @Test
-    fun delete() = runTest{
+    fun delete() = runTest {
         insert()
         learnDao.delete(1)
 

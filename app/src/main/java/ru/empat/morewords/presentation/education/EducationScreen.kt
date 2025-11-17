@@ -62,22 +62,22 @@ fun EducationScreen(component: EducationComponent) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar(language: List<Language>){
+fun Toolbar(language: List<Language>) {
     CenterAlignedTopAppBar(
         title = {
-            if(language.isEmpty()) return@CenterAlignedTopAppBar
+            if (language.isEmpty()) return@CenterAlignedTopAppBar
 
             LazyColumn(
 
             ) {
                 items(
                     items = language,
-                    key = {it.id}
+                    key = { it.id }
                 ) {
                     Text("${it.code} ${it.name}")
                 }
             }
-                },
+        },
         navigationIcon = {},
         actions = {},
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -135,8 +135,8 @@ fun Loaded(component: EducationComponent, state: EducationStore.State.StatisticS
 }
 
 @Composable
-fun StatisticItems (state : EducationStore.State.StatisticState.Loaded){
-    Row (
+fun StatisticItems(state: EducationStore.State.StatisticState.Loaded) {
+    Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -176,8 +176,18 @@ fun StatisticBox(modifier: Modifier, count: Int, description: String, color: Col
     ) {
         Column {
             val textModifier = Modifier.fillMaxWidth()
-            Text(modifier = textModifier, text = "$count", textAlign = TextAlign.Center, color = color)
-            Text(modifier = textModifier, text = description, textAlign = TextAlign.Center, color = color)
+            Text(
+                modifier = textModifier,
+                text = "$count",
+                textAlign = TextAlign.Center,
+                color = color
+            )
+            Text(
+                modifier = textModifier,
+                text = description,
+                textAlign = TextAlign.Center,
+                color = color
+            )
         }
     }
 }

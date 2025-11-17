@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetLanguagesUseCase @Inject constructor(
     val repository: WordRepository
 ) {
-    operator fun invoke() : Flow<List<Language>> {
+    operator fun invoke(): Flow<List<Language>> {
         return repository.getAllLanguages()
     }
 }

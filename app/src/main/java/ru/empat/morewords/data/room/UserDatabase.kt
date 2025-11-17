@@ -26,14 +26,14 @@ import ru.empat.morewords.data.room.entity.WordModel
 abstract class UserDatabase : RoomDatabase() {
 
     abstract fun wordDao(): WordDao
-    abstract fun languageDao() : LanguageDao
-    abstract fun dictionaryDao() : DictionaryDao
-    abstract fun learnProgressDao() : LearnProgressDao
+    abstract fun languageDao(): LanguageDao
+    abstract fun dictionaryDao(): DictionaryDao
+    abstract fun learnProgressDao(): LearnProgressDao
 
     companion object {
         const val DATABASE_NAME = "user_database"
 
-        private var INSTANCE : UserDatabase? = null
+        private var INSTANCE: UserDatabase? = null
 
         private val LOCK = Any()
 
@@ -47,14 +47,14 @@ abstract class UserDatabase : RoomDatabase() {
                     context,
                     UserDatabase::class.java,
                     DATABASE_NAME
-                ).addCallback(object : Callback(){
+                ).addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 INSTANCE?.let { initDb(it) }
-                            }catch (e: Exception){
-                                Log.e("Room" , "Init error ${e.stackTrace}")
+                            } catch (e: Exception) {
+                                Log.e("Room", "Init error ${e.stackTrace}")
                             }
                         }
                     }
@@ -65,10 +65,10 @@ abstract class UserDatabase : RoomDatabase() {
             }
         }
 
-        private suspend fun initDb(instance : UserDatabase){
+        private suspend fun initDb(instance: UserDatabase) {
             instance.languageDao().insert(LanguageModel(1, "English", "En"))
             instance.languageDao().insert(LanguageModel(1, "Русский", "Ru"))
-            instance.dictionaryDao().addDictionaty(DictionaryModel(1, "User" , 1))
+            instance.dictionaryDao().addDictionaty(DictionaryModel(1, "User", 1))
         }
     }
 }

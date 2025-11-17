@@ -18,7 +18,7 @@ class LanguageDaoTest {
     private lateinit var languageDao: LanguageDao
 
     @Before
-    fun setup() = runTest{
+    fun setup() = runTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = TestDatabase.getInMemoryInstance(context)
 
@@ -26,12 +26,12 @@ class LanguageDaoTest {
     }
 
     @After
-    fun clear(){
+    fun clear() {
         database.close()
     }
 
     @Test
-    fun insertAndFindTest() = runTest{
+    fun insertAndFindTest() = runTest {
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 

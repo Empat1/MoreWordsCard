@@ -8,7 +8,7 @@ import ru.empat.morewords.domain.entity.Word
 
 interface WordRepository {
 
-    suspend fun addWord(word: Word) : Long
+    suspend fun addWord(word: Word): Long
 
     suspend fun editWord(word: Word)
 
@@ -16,7 +16,7 @@ interface WordRepository {
 
     fun getDictionaryWorld(id: Long): Flow<List<Word>>
 
-    fun getAllLanguages() : Flow<List<Language>>
+    fun getAllLanguages(): Flow<List<Language>>
 
     suspend fun addLanguages(language: Language)
 

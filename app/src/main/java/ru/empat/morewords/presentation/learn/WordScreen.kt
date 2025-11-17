@@ -43,7 +43,7 @@ import ru.empat.morewords.ui.theme.Red
 import kotlin.math.roundToInt
 
 @Composable
-fun LearnCardContent(component: LearnCardComponent){
+fun LearnCardContent(component: LearnCardComponent) {
     val state by component.model.collectAsState()
 
     MyCard(modifier = Modifier, state.word)
@@ -93,6 +93,7 @@ fun MyCard(
                         )
                     }
                 }
+
                 EndToStart -> {
                     Box(
                         modifier = Modifier
@@ -105,6 +106,7 @@ fun MyCard(
                         )
                     }
                 }
+
                 Settled -> {}
             }
         }
@@ -146,11 +148,12 @@ fun MyCard(
                         Text(
                             text = word.text,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .graphicsLayer {
-                                rotationY = stateRotationY
-                                cameraDistance = 12f * density
-                            }
+                                    rotationY = stateRotationY
+                                    cameraDistance = 12f * density
+                                }
                         )
                     }
                 }
@@ -161,6 +164,6 @@ fun MyCard(
 
 @Composable
 @Preview(showBackground = true)
-fun Preview(){
-    MyCard(Modifier.fillMaxSize(),Word(1, 1, "Word" , "Слово"))
+fun Preview() {
+    MyCard(Modifier.fillMaxSize(), Word(1, 1, "Word", "Слово"))
 }

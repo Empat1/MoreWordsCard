@@ -41,7 +41,8 @@ interface LearnCardStore : Store<Intent, State, Label> {
             data object L : Msg
         }
 
-        private inner class ExecutorImpl() : CoroutineExecutor<Intent, Action, State, Msg, Label>(){
+        private inner class ExecutorImpl() :
+            CoroutineExecutor<Intent, Action, State, Msg, Label>() {
             override fun executeIntent(intent: LearnCardStore.Intent, getState: () -> State) {
                 super.executeIntent(intent, getState)
             }
@@ -49,17 +50,17 @@ interface LearnCardStore : Store<Intent, State, Label> {
 
         private object ReducerImpl : Reducer<State, Msg> {
             override fun State.reduce(msg: Msg): State {
-                return State(Word(1, 1, "" , ""), false)
+                return State(Word(1, 1, "", ""), false)
             }
         }
 
         fun create(word: Word): LearnCardStore =
             object : LearnCardStore, Store<Intent, State, Label> by factory.create(
                 name = "LearnCardStore",
-                        initialState = State(word, true),
-                        bootstrapper = BootstrapperImpl(),
-                        executorFactory = ::ExecutorImpl,
-                        reducer  = ReducerImpl
+                initialState = State(word, true),
+                bootstrapper = BootstrapperImpl(),
+                executorFactory = ::ExecutorImpl,
+                reducer = ReducerImpl
             ) {}
     }
 }

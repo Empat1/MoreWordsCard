@@ -20,7 +20,7 @@ class DictionaryDaoTest {
     private lateinit var dictionaryDao: DictionaryDao
 
     @Before
-    fun setup(){
+    fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = TestDatabase.getInMemoryInstance(context)
 
@@ -29,12 +29,12 @@ class DictionaryDaoTest {
     }
 
     @After
-    fun clear(){
+    fun clear() {
         database.close()
     }
 
     @Test
-    fun insertAndFindTest() = runTest{
+    fun insertAndFindTest() = runTest {
         val languageModel = LanguageModel(1, "Английски", "En")
         languageDao.insert(languageModel)
 
@@ -47,13 +47,13 @@ class DictionaryDaoTest {
     }
 
     @Test
-    fun insertWithoutLanguage() = runTest{
+    fun insertWithoutLanguage() = runTest {
         val dictionaryModel = DictionaryModel(1, "User", 1)
 
         val actual = try {
             dictionaryDao.addDictionaty(dictionaryModel)
             false
-        } catch (e: SQLiteConstraintException){
+        } catch (e: SQLiteConstraintException) {
             true
         }
         assert(actual)

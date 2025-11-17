@@ -11,10 +11,11 @@ import ru.empat.morewords.domain.entity.Language
 interface LanguageDao {
 
     @Query("SELECT * from language WHERE id = :id")
-    fun getLanguage(id: Long) : Flow<LanguageModel>
+    fun getLanguage(id: Long): Flow<LanguageModel>
 
     @Query("SELECT * from language")
-    fun getAllLanguages() : Flow<List<LanguageModel>>
+    fun getAllLanguages(): Flow<List<LanguageModel>>
+
     @Insert
-    suspend fun insert(languageModel: LanguageModel) : Long
+    suspend fun insert(languageModel: LanguageModel): Long
 }

@@ -11,13 +11,14 @@ import ru.empat.morewords.data.room.entity.WordModel
 interface WordDao {
 
     @Query("SELECT * FROM word")
-    fun getAllWords() : Flow<List<WordModel>>
+    fun getAllWords(): Flow<List<WordModel>>
 
     @Query("SELECT * FROM word WHERE id = :id")
     fun getWordById(id: Long): Flow<WordModel?>
 
     @Query("SELECT * FROM word WHERE dictionaryId = :id")
     fun getWordByDictionary(id: Long): Flow<List<WordModel>>
+
     @Insert
     suspend fun insertWord(wordModel: WordModel): Long
 

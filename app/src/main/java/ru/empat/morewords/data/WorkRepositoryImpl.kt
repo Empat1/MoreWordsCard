@@ -24,14 +24,16 @@ class WorkRepositoryImpl @Inject constructor(
     private val learnProgressDao: LearnProgressDao
 ) : WordRepository {
 
-    override suspend fun addWord(word: Word) : Long {
-        learnProgressDao.insert(LearningProgressWordModel(
-            id = 0,
-            wordId = word.wordId,
-            knowledgeLevel = 0,
-            lastReviewed = null,
-            nextReview = 0
-        ))
+    override suspend fun addWord(word: Word): Long {
+        learnProgressDao.insert(
+            LearningProgressWordModel(
+                id = 0,
+                wordId = word.wordId,
+                knowledgeLevel = 0,
+                lastReviewed = null,
+                nextReview = 0
+            )
+        )
         return wordDao.insertWord(word.toWordModel())
     }
 
@@ -44,7 +46,7 @@ class WorkRepositoryImpl @Inject constructor(
     }
 
     override fun getDictionaryWorld(id: Long): Flow<List<Word>> {
-        return wordDao.getWordByDictionary(id).map{ wordModels -> wordModels.map{it.toWord()}}
+        return wordDao.getWordByDictionary(id).map { wordModels -> wordModels.map { it.toWord() } }
     }
 
     override fun getAllLanguages(): Flow<List<Language>> {

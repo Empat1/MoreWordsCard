@@ -23,7 +23,7 @@ class WordDaoTest {
     private lateinit var dictionaryDao: DictionaryDao
 
     @Before
-    fun setup(){
+    fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = TestDatabase.getInMemoryInstance(context)
 
@@ -33,7 +33,7 @@ class WordDaoTest {
     }
 
     @After
-    fun clear(){
+    fun clear() {
         database.close()
     }
 
@@ -45,7 +45,7 @@ class WordDaoTest {
         val dictionaryModel = DictionaryModel(1, "User", 1)
         dictionaryDao.addDictionaty(dictionaryModel)
 
-        val wordModel = WordModel(1 , 1, "Hello" , "Привет")
+        val wordModel = WordModel(1, 1, "Hello", "Привет")
         wordDao.insertWord(wordModel)
 
         val actual: WordModel = wordDao.getWordById(1).first()!!

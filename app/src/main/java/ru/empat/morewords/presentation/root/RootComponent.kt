@@ -7,7 +7,7 @@ import ru.empat.morewords.presentation.learn.LearnCardComponent
 
 //import ru.empat.morewords.presentation.learn.LearnCardComponent
 
-interface RootComponent{
+interface RootComponent {
 
     val stack: Value<ChildStack<*, Child>>
 

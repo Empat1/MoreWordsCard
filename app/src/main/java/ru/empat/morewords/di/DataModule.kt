@@ -16,31 +16,31 @@ import ru.empat.morewords.domain.repository.WordRepository
 interface DataModule {
 
     @[ApplicationScope Binds]
-    fun bindRepository(impl: WorkRepositoryImpl) : WordRepository
+    fun bindRepository(impl: WorkRepositoryImpl): WordRepository
 
     companion object {
         @[ApplicationScope Provides]
-        fun provideUserDatabase(context: Context) : UserDatabase{
+        fun provideUserDatabase(context: Context): UserDatabase {
             return UserDatabase.newInstance(context)
         }
 
         @[ApplicationScope Provides]
-        fun provideDictionaryDao(database: UserDatabase) : DictionaryDao{
+        fun provideDictionaryDao(database: UserDatabase): DictionaryDao {
             return database.dictionaryDao()
         }
 
         @[ApplicationScope Provides]
-        fun provideLanguageDao(database: UserDatabase) : LanguageDao{
+        fun provideLanguageDao(database: UserDatabase): LanguageDao {
             return database.languageDao()
         }
 
         @[ApplicationScope Provides]
-        fun provideLearnProgressDao(database: UserDatabase) : LearnProgressDao{
+        fun provideLearnProgressDao(database: UserDatabase): LearnProgressDao {
             return database.learnProgressDao()
         }
 
         @[ApplicationScope Provides]
-        fun provideWordDao(database: UserDatabase) : WordDao{
+        fun provideWordDao(database: UserDatabase): WordDao {
             return database.wordDao()
         }
     }
