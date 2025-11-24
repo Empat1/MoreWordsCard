@@ -3,8 +3,10 @@
 
     <string name="learn">Учить</string>
     <string name="know">Знаю</string>
+    <string name="notKnow">Не знаю</string>
     <string name="learned">Выучено</string>
     <string name="start">Начать</string>
     <string name="showList">Показать карточки</string>
     <string name="addCard">Добавить</string>
+    <string name="save">Сохранить</string>
 </resources>

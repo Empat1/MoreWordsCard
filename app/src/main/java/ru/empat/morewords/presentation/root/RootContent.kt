@@ -2,6 +2,7 @@ package ru.empat.morewords.presentation.root
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import ru.empat.morewords.presentation.add.AddWordScreen
 import ru.empat.morewords.presentation.education.EducationScreen
 import ru.empat.morewords.presentation.learn.LearnCardContent
 import ru.empat.morewords.ui.theme.MoreWordsTheme
@@ -19,6 +20,10 @@ fun RootContent(component: RootComponent) {
 
                 is RootComponent.Child.Education -> {
                     EducationScreen(component = instance.component)
+                }
+
+                is RootComponent.Child.AddCard -> {
+                    AddWordScreen(component = instance.component)
                 }
             }
         }

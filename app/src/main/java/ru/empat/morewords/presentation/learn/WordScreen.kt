@@ -3,15 +3,11 @@ package ru.empat.morewords.presentation.learn
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
@@ -25,49 +21,69 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import ru.empat.morewords.R
 import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.ui.theme.Green
 import ru.empat.morewords.ui.theme.Red
-import kotlin.math.roundToInt
+
+
+const val ROTATION = 180f
 
 @Composable
 fun LearnCardContent(component: LearnCardComponent) {
     val state by component.model.collectAsState()
 
-    MyCard(modifier = Modifier, state.word)
+    when (val currentState = state.wordState) {
+        LearnCardStore.State.WordState.Error -> {}
+        LearnCardStore.State.WordState.Init -> {}
+        LearnCardStore.State.WordState.Loading -> {}
+        is LearnCardStore.State.WordState.WordLoaded -> {
+
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                MyCard(
+                    word = currentState.word,
+                    hide = currentState.isHide,
+                    onClick = {
+                        component.onClick()
+                    },
+                    onRight = {
+                        component.learn(currentState.word.wordId , true)
+                    },
+                    onLeft = {
+                        component.learn(currentState.word.wordId , false)
+                    }
+                )
+            }
+        }
+    }
 }
 
 @Composable
 fun MyCard(
-    modifier: Modifier,
     word: Word,
-    onRight: (() -> Unit)? = null,
-    onLeft: (() -> Unit)? = null
+    hide: Boolean,
+    onClick: (() -> Unit),
+    onRight: (() -> Unit),
+    onLeft: (() -> Unit)
 ) {
 
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            if (it == StartToEnd) onRight
-            else if (it == EndToStart) onLeft
+            if (it == StartToEnd) onRight.invoke()
+            else if (it == EndToStart) onLeft.invoke()
             it != StartToEnd
         }
     )
-
-    var hideHint by remember { mutableStateOf(false) }
-
-    var hide by rememberSaveable { mutableStateOf(false) }
 
     val stateRotationY by animateFloatAsState(
         targetValue = if (hide) 180f else 0f,
@@ -76,35 +92,18 @@ fun MyCard(
 
     SwipeToDismissBox(
         state = swipeToDismissBoxState,
-        enableDismissFromStartToEnd = hide,
-        enableDismissFromEndToStart = hide,
-        modifier = modifier
+        enableDismissFromStartToEnd = !hide,
+        enableDismissFromEndToStart = !hide,
+        modifier = Modifier
             .padding(16.dp),
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {
                 StartToEnd -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Text(
-                            text = "Знаю",
-                            color = Green
-                        )
-                    }
+                    Side(stringResource(R.string.know), Green, contentAlignment = Alignment.TopEnd)
                 }
 
                 EndToStart -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.TopEnd
-                    ) {
-                        Text(
-                            text = "Не знаю",
-                            color = Red
-                        )
-                    }
+                    Side(stringResource(R.string.notKnow), Red, Alignment.TopStart)
                 }
 
                 Settled -> {}
@@ -119,7 +118,7 @@ fun MyCard(
                     cameraDistance = 12f * density
                 }
                 .clickable {
-                    hide = true
+                    onClick.invoke()
                 },
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
@@ -131,19 +130,18 @@ fun MyCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        if (stateRotationY == 180f) {
-                            rotationY = 180f
+                        if (stateRotationY == ROTATION) {
+                            rotationY = ROTATION
                         }
                     }
             ) {
-                if (stateRotationY == 180f) {
+                if (stateRotationY == ROTATION) {
                     Text(
                         text = word.translate,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
-
                     Column {
                         Text(
                             text = word.text,
@@ -163,7 +161,15 @@ fun MyCard(
 }
 
 @Composable
-@Preview(showBackground = true)
-fun Preview() {
-    MyCard(Modifier.fillMaxSize(), Word(1, 1, "Word", "Слово"))
+fun Side(text: String, color: Color, contentAlignment: Alignment) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = contentAlignment
+    ) {
+        Text(
+            text = text,
+            color = color
+        )
+    }
 }
