@@ -11,7 +11,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.parcelize.Parcelize
-import ru.empat.morewords.domain.entity.Word
+import ru.empat.morewords.presentation.add.DefaultAddWordComponent
 import ru.empat.morewords.presentation.education.DefaultEducationComponent
 import ru.empat.morewords.presentation.learn.DefaultLearnComponent
 import ru.empat.morewords.presentation.root.RootComponent.Child.*
@@ -19,6 +19,7 @@ import ru.empat.morewords.presentation.root.RootComponent.Child.*
 class DefaultRootComponent @AssistedInject constructor(
     private val learnCardComponentFactory: DefaultLearnComponent.Factory,
     private val educationComponentFactory: DefaultEducationComponent.Factory,
+    private val addCardComponentFactory: DefaultAddWordComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext {
 
@@ -37,9 +38,8 @@ class DefaultRootComponent @AssistedInject constructor(
         return when (config) {
             Config.CardLean -> {
                 val component = learnCardComponentFactory.create(
-                    word = Word(2, 2, "2", "2"),
-                    {},
-                    componentContext
+                    componentContext,
+                    {}
                 )
                 LearnCard(component)
             }
@@ -54,10 +54,17 @@ class DefaultRootComponent @AssistedInject constructor(
                         navigation.push(Config.CardLean)
                     },
                     addWord = {
-                        println()
+                        navigation.push(Config.AddCard)
                     }
                 )
                 Education(component)
+            }
+
+            Config.AddCard -> {
+                val component = addCardComponentFactory.create(
+                    componentContext
+                )
+                AddCard(component)
             }
         }
     }
@@ -68,6 +75,9 @@ class DefaultRootComponent @AssistedInject constructor(
 
         @Parcelize
         data object EducationLearn : Config
+
+        @Parcelize
+        data object AddCard: Config
     }
 
     @AssistedFactory

@@ -1,24 +1,13 @@
 package ru.empat.morewords.data.room.entity
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "learning_progress",
-    indices = [Index(value = ["wordId"])],
-    foreignKeys = [ForeignKey(
-        entity = WordModel::class,
-        parentColumns = ["id"],
-        childColumns = ["wordId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
+@Entity
 data class LearningProgressWordModel(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val wordId: Long,
+    @PrimaryKey(autoGenerate = true) val learnId: Long = 0,
     val knowledgeLevel: Int = 0,
     val lastReviewed: Long? = null,
-    val nextReview: Long
+    val nextReview: Long,
+    val success: Boolean
 )

@@ -31,7 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.empat.morewords.R
 import ru.empat.morewords.domain.entity.Language
+import ru.empat.morewords.domain.entity.Learn
 import ru.empat.morewords.domain.entity.Word
+import java.util.Date
 
 @Composable
 fun EducationScreen(component: EducationComponent) {
@@ -125,7 +127,10 @@ fun Loaded(component: EducationComponent, state: EducationStore.State.StatisticS
 
                 Button(
                     modifier = modifier,
-                    onClick = { component.addWord(Word(1, 1, "", "")) }
+                    onClick = {
+//                        component.addWord(Word(1, "1", "", Learn(1, 1, Date(), Date(), true)))
+                        component.addWord()
+                    }
                 ) {
                     Text(text = stringResource(R.string.addCard))
                 }

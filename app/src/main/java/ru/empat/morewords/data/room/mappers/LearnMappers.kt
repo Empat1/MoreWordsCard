@@ -4,18 +4,18 @@ import ru.empat.morewords.data.room.entity.LearningProgressWordModel
 import ru.empat.morewords.domain.entity.Learn
 import java.util.Date
 
-fun Learn.toLearningProgressWordModel(): LearningProgressWordModel = LearningProgressWordModel(
-    id = id,
-    wordId = wordId,
+fun Learn.toDbModel(): LearningProgressWordModel = LearningProgressWordModel(
+    learnId = learnId,
     knowledgeLevel = knowledgeLevel,
     lastReviewed = learnLastRepetition?.time,
-    nextReview = learnGoodRepetition.time
+    nextReview = learnGoodRepetition.time,
+    success = success
 )
 
-fun LearningProgressWordModel.toLearn(): Learn = Learn(
-    id = id,
-    wordId = wordId,
+fun LearningProgressWordModel.asExternalModel(): Learn = Learn(
+    learnId = learnId,
     knowledgeLevel = knowledgeLevel,
     learnGoodRepetition = Date(nextReview),
-    learnLastRepetition = lastReviewed?.let { Date(it) }
+    learnLastRepetition = lastReviewed?.let { Date(it) },
+    success = success
 )

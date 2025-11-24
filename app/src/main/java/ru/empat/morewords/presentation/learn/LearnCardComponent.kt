@@ -8,7 +8,5 @@ interface LearnCardComponent {
 
     fun onClick()
 
-    fun onRightSwipe()
-
-    fun onLeftSwipe()
+    fun learn(wordId: Long, success: Boolean)
 }

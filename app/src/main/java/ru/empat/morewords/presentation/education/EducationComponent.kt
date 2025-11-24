@@ -11,5 +11,5 @@ interface EducationComponent {
 
     fun onShowList()
 
-    fun addWord(card: Word)
+    fun addWord()
 }

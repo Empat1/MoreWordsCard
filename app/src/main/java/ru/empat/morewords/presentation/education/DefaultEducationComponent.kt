@@ -16,7 +16,7 @@ class DefaultEducationComponent @AssistedInject constructor(
     private val educationStoreFactory: EducationStoreFactory,
     @Assisted("clickLearn") private val clickLearn: () -> Unit,
     @Assisted("onShowList") private val onShowList: () -> Unit,
-    @Assisted("addWord") private val addWord: (Word) -> Unit,
+    @Assisted("addWord") private val addWord: () -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : EducationComponent, ComponentContext by componentContext {
 
@@ -28,7 +28,7 @@ class DefaultEducationComponent @AssistedInject constructor(
             store.labels.collect {
                 when (it) {
                     EducationStore.Label.ClickAddCard -> {
-                        //TODO
+                        addWord.invoke()
                     }
 
                     EducationStore.Label.ClickGetList -> {
@@ -36,7 +36,7 @@ class DefaultEducationComponent @AssistedInject constructor(
                     }
 
                     EducationStore.Label.ClickLearn -> {
-                        clickLearn()
+                        clickLearn.invoke()
                     }
                 }
             }
@@ -53,7 +53,7 @@ class DefaultEducationComponent @AssistedInject constructor(
         store.accept(EducationStore.Intent.ClickGetList)
     }
 
-    override fun addWord(card: Word) {
+    override fun addWord() {
         store.accept(EducationStore.Intent.ClickAddCard)
     }
 
@@ -63,7 +63,7 @@ class DefaultEducationComponent @AssistedInject constructor(
             @Assisted("componentContext") componentContext: ComponentContext,
             @Assisted("clickLearn") clickLearn: () -> Unit,
             @Assisted("onShowList") onShowList: () -> Unit,
-            @Assisted("addWord") addWord: (Word) -> Unit,
+            @Assisted("addWord") addWord: () -> Unit,
         ): DefaultEducationComponent
     }
 }

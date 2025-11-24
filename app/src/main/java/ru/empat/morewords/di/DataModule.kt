@@ -4,11 +4,10 @@ import android.content.Context
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import ru.empat.morewords.data.WorkRepositoryImpl
+import ru.empat.morewords.data.room.repository.WorkRepositoryImpl
 import ru.empat.morewords.data.room.UserDatabase
 import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
-import ru.empat.morewords.data.room.dao.LearnProgressDao
 import ru.empat.morewords.data.room.dao.WordDao
 import ru.empat.morewords.domain.repository.WordRepository
 
@@ -32,11 +31,6 @@ interface DataModule {
         @[ApplicationScope Provides]
         fun provideLanguageDao(database: UserDatabase): LanguageDao {
             return database.languageDao()
-        }
-
-        @[ApplicationScope Provides]
-        fun provideLearnProgressDao(database: UserDatabase): LearnProgressDao {
-            return database.learnProgressDao()
         }
 
         @[ApplicationScope Provides]
