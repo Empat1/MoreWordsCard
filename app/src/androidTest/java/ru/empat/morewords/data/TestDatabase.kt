@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
-import ru.empat.morewords.data.room.dao.LearnProgressDao
 import ru.empat.morewords.data.room.dao.WordDao
 import ru.empat.morewords.data.room.entity.DictionaryModel
 import ru.empat.morewords.data.room.entity.LanguageModel
@@ -25,7 +24,7 @@ abstract class TestDatabase : RoomDatabase() {
 
     abstract fun dictionaryDao() : DictionaryDao
 
-    abstract fun learnProgressDao() : LearnProgressDao
+//    abstract fun learnProgressDao() : LearnProgressDao
 
     companion object {
         @Volatile

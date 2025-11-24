@@ -4,6 +4,7 @@ data class Word(
     var wordId: Long,
     var dictionaryId: Long,
     var text: String,
-    var translate: String
+    var translate: String,
+    var learn: Learn
 )
 

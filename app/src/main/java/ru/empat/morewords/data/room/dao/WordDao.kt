@@ -6,12 +6,13 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import ru.empat.morewords.data.room.entity.WordModel
+import ru.empat.morewords.domain.entity.Word
 
 @Dao
 interface WordDao {
 
     @Query("SELECT * FROM word")
-    fun getAllWords(): Flow<List<WordModel>>
+    fun getAllWords(): Flow<List<WordModel>?>
 
     @Query("SELECT * FROM word WHERE id = :id")
     fun getWordById(id: Long): Flow<WordModel?>
@@ -27,4 +28,7 @@ interface WordDao {
 
     @Query("DELETE FROM word WHERE id = :id")
     suspend fun deleteWord(id: Long)
+
+    @Query("SELECT * FROM word ORDER BY lastReviewed LIMIT :limit")
+    fun getOldRepeatedWord(limit: Long): Flow<List<WordModel>?>
 }

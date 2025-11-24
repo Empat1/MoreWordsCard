@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
-import ru.empat.morewords.data.room.dao.LearnProgressDao
 import ru.empat.morewords.data.room.dao.WordDao
 import ru.empat.morewords.data.room.entity.DictionaryModel
 import ru.empat.morewords.data.room.entity.LanguageModel
@@ -28,7 +27,6 @@ abstract class UserDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun languageDao(): LanguageDao
     abstract fun dictionaryDao(): DictionaryDao
-    abstract fun learnProgressDao(): LearnProgressDao
 
     companion object {
         const val DATABASE_NAME = "user_database"
@@ -66,9 +64,16 @@ abstract class UserDatabase : RoomDatabase() {
         }
 
         private suspend fun initDb(instance: UserDatabase) {
+
             instance.languageDao().insert(LanguageModel(1, "English", "En"))
-            instance.languageDao().insert(LanguageModel(1, "Русский", "Ru"))
+            instance.languageDao().insert(LanguageModel(2, "Русский", "Ru"))
             instance.dictionaryDao().addDictionaty(DictionaryModel(1, "User", 1))
+
+            for(i in 0..10) {
+                val learn = LearningProgressWordModel(i.toLong() , 1, null, 0L, false)
+                instance.wordDao().insertWord(WordModel(i.toLong(), 1L, "Word $i", "Слово $i", learn))
+
+            }
         }
     }
 }
