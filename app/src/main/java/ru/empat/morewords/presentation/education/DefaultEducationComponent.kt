@@ -32,7 +32,7 @@ class DefaultEducationComponent @AssistedInject constructor(
                     }
 
                     EducationStore.Label.ClickGetList -> {
-                        onShowList
+                        onShowList.invoke()
                     }
 
                     EducationStore.Label.ClickLearn -> {

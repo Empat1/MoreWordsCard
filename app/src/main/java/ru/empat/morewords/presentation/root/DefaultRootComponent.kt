@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import dagger.assisted.Assisted
@@ -14,12 +15,14 @@ import kotlinx.parcelize.Parcelize
 import ru.empat.morewords.presentation.add.DefaultAddWordComponent
 import ru.empat.morewords.presentation.education.DefaultEducationComponent
 import ru.empat.morewords.presentation.learn.DefaultLearnComponent
+import ru.empat.morewords.presentation.list.DefaultListWordComponent
 import ru.empat.morewords.presentation.root.RootComponent.Child.*
 
 class DefaultRootComponent @AssistedInject constructor(
     private val learnCardComponentFactory: DefaultLearnComponent.Factory,
     private val educationComponentFactory: DefaultEducationComponent.Factory,
     private val addCardComponentFactory: DefaultAddWordComponent.Factory,
+    private val listWordComponentFactory: DefaultListWordComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext {
 
@@ -48,7 +51,7 @@ class DefaultRootComponent @AssistedInject constructor(
                 val component = educationComponentFactory.crate(
                     componentContext,
                     onShowList = {
-                        println()
+                        navigation.push(Config.ListWord)
                     },
                     clickLearn = {
                         navigation.push(Config.CardLean)
@@ -66,6 +69,16 @@ class DefaultRootComponent @AssistedInject constructor(
                 )
                 AddCard(component)
             }
+
+            Config.ListWord -> {
+                val component = listWordComponentFactory.create(
+//                    {
+//                        navigation.pop()
+//                    },
+                    componentContext
+                )
+                ListWord(component)
+            }
         }
     }
 
@@ -77,7 +90,10 @@ class DefaultRootComponent @AssistedInject constructor(
         data object EducationLearn : Config
 
         @Parcelize
-        data object AddCard: Config
+        data object AddCard : Config
+
+        @Parcelize
+        data object ListWord : Config
     }
 
     @AssistedFactory

@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.Value
 import ru.empat.morewords.presentation.add.AddWordComponent
 import ru.empat.morewords.presentation.education.EducationComponent
 import ru.empat.morewords.presentation.learn.LearnCardComponent
+import ru.empat.morewords.presentation.list.ListWordComponent
 
 //import ru.empat.morewords.presentation.learn.LearnCardComponent
 
@@ -17,5 +18,7 @@ interface RootComponent {
         data class Education(val component: EducationComponent) : Child
 
         data class AddCard(val component: AddWordComponent) : Child
+
+        data class ListWord(val component: ListWordComponent) : Child
     }
 }
