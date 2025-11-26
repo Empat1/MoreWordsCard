@@ -72,9 +72,9 @@ class DefaultRootComponent @AssistedInject constructor(
 
             Config.ListWord -> {
                 val component = listWordComponentFactory.create(
-//                    {
-//                        navigation.pop()
-//                    },
+                    {
+                        navigation.pop()
+                    },
                     componentContext
                 )
                 ListWord(component)

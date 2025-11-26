@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 class DefaultListWordComponent @AssistedInject constructor(
     private val storeFactory: ListWordStoreFactory,
+    @Assisted("onBackClicked") val onBackClicked: () -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
-) : ListWordComponent, ComponentContext by componentContext  {
+) : ListWordComponent, ComponentContext by componentContext {
 
     val store = instanceKeeper.getStore { storeFactory.create() }
 
@@ -21,14 +22,13 @@ class DefaultListWordComponent @AssistedInject constructor(
         get() = store.stateFlow
 
     override fun clickBack() {
-//        onBackClicked.invoke()
+        onBackClicked.invoke()
     }
 
     @AssistedFactory
-    interface Factory{
-
+    interface Factory {
         fun create(
-//            @Assisted("onBackClicked") onBackClicked: () -> Unit,
+            @Assisted("onBackClicked") onBackClicked: () -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext
         ): DefaultListWordComponent
     }
