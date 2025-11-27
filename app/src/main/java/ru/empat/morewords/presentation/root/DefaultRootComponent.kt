@@ -12,7 +12,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.parcelize.Parcelize
+import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.presentation.add.DefaultAddWordComponent
+import ru.empat.morewords.presentation.edit.DefaultEditWordComponent
 import ru.empat.morewords.presentation.education.DefaultEducationComponent
 import ru.empat.morewords.presentation.learn.DefaultLearnComponent
 import ru.empat.morewords.presentation.list.DefaultListWordComponent
@@ -23,6 +25,7 @@ class DefaultRootComponent @AssistedInject constructor(
     private val educationComponentFactory: DefaultEducationComponent.Factory,
     private val addCardComponentFactory: DefaultAddWordComponent.Factory,
     private val listWordComponentFactory: DefaultListWordComponent.Factory,
+    private val editWordComponentFactory: DefaultEditWordComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext {
 
@@ -75,9 +78,24 @@ class DefaultRootComponent @AssistedInject constructor(
                     {
                         navigation.pop()
                     },
+                    onWordClicked = { word ->
+                        navigation.push(Config.EditWord(word))
+                    },
                     componentContext
                 )
                 ListWord(component)
+            }
+
+            is Config.EditWord -> {
+                val component = editWordComponentFactory.create(
+                    word = config.word,
+                    onBackClicked = {
+                        navigation.pop()
+                    },
+                    componentContext
+                )
+
+                EditWord(component)
             }
         }
     }
@@ -94,6 +112,9 @@ class DefaultRootComponent @AssistedInject constructor(
 
         @Parcelize
         data object ListWord : Config
+
+        @Parcelize
+        data class EditWord(val word: Word): Config
     }
 
     @AssistedFactory

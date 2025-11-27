@@ -9,4 +9,5 @@
     <string name="showList">Показать карточки</string>
     <string name="addCard">Добавить</string>
     <string name="save">Сохранить</string>
+    <string name="remove">Удалить</string>
 </resources>

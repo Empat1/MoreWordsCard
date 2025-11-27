@@ -48,7 +48,9 @@ fun ListWordScreen(component: ListWordComponent) {
             when (val currentState = state.value) {
                 ListWordStore.State.Init -> {}
                 is ListWordStore.State.Loaded -> {
-                    ListWord(word = currentState.words)
+                    ListWord(word = currentState.words){
+                        component.openWord(it)
+                    }
                 }
 
                 ListWordStore.State.Loading -> {
@@ -79,7 +81,7 @@ private fun Topbar(onBackClick: () -> Unit) {
 }
 
 @Composable
-private fun ListWord(word: List<Word>) {
+private fun ListWord(word: List<Word>, wordClick: (Word) -> Unit) {
     val alpha by animateFloatAsState(
         targetValue = 1f,
         animationSpec = tween(durationMillis = 1000)
@@ -91,7 +93,7 @@ private fun ListWord(word: List<Word>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(alpha),
-                onClick = {},
+                onClick = { wordClick.invoke(it) },
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 2.dp
                 )

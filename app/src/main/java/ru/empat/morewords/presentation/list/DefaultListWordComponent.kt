@@ -8,10 +8,12 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import ru.empat.morewords.domain.entity.Word
 
 class DefaultListWordComponent @AssistedInject constructor(
     private val storeFactory: ListWordStoreFactory,
     @Assisted("onBackClicked") val onBackClicked: () -> Unit,
+    @Assisted("onWordClicked") val onWordClicked: (Word) -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : ListWordComponent, ComponentContext by componentContext {
 
@@ -22,13 +24,18 @@ class DefaultListWordComponent @AssistedInject constructor(
         get() = store.stateFlow
 
     override fun clickBack() {
-        onBackClicked.invoke()
+        onBackClicked()
+    }
+
+    override fun openWord(word: Word) {
+        onWordClicked(word)
     }
 
     @AssistedFactory
     interface Factory {
         fun create(
             @Assisted("onBackClicked") onBackClicked: () -> Unit,
+            @Assisted("onWordClicked") onWordClicked: (Word) -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext
         ): DefaultListWordComponent
     }
