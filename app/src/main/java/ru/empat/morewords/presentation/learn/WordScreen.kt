@@ -1,6 +1,7 @@
 package ru.empat.morewords.presentation.learn
 
 import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -41,7 +43,15 @@ import kotlin.random.Random
 const val ROTATION = 180f
 const val ALPHA_ANIMATION_DURATION = 400
 const val ROTATION_ANIMATION_DURATION = 400
-const val SWIPE_ANIMATION_DURATION = 1000
+const val SWIPE_ANIMATION_DURATION = 600
+const val Y_TRANSACTION_TIME = 300
+
+const val WIGHT_CARD = 0.65f
+const val HEIGHT_CARD = 0.5f
+
+
+const val Z_TOP = 10f
+const val Z_BOTTOM = 5f
 
 const val DETECT_DRAG_LONG = 100
 
@@ -84,21 +94,38 @@ private fun LoadedWord(
                 animationStep.value = Animation.Right.Swipe
             },
             onLeft = {
-                component.learn(wordId, false)
+                animationStep.value = Animation.Left.SwipeLeft
             },
-            animationEnd = {
+            onAnimationStepComplete = {
+
+                Log.d("Animation", "onAnimationStepComplete = ${animationStep}")
+
+                if (it != animationStep.value) return@MyCard
+
                 when (it) {
-                    Animation.Init -> {}
-                    Animation.Left.SwipeLeft -> TODO()
+                    Animation.Init -> {
+                    }
+
+                    Animation.Left.SwipeLeft -> {
+                        animationStep.value = Animation.Left.CorrectY
+                    }
+
+                    Animation.Left.CorrectY -> {
+                        animationStep.value = Animation.Left.SwipeRight
+                    }
+
                     Animation.Left.SwipeRight -> {
                         component.learn(wordId, false)
                         animationStep.value = Animation.Init
                     }
 
+
                     Animation.Right.Swipe -> {
                         component.learn(wordId, true)
                         animationStep.value = Animation.Init
                     }
+
+
                 }
             }
         )
@@ -111,12 +138,25 @@ fun BackgroundCards() {
     repeat(5) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .fillMaxHeight(0.55f)
-                .zIndex(5f)
-                .rotate(Random.nextInt(from = -10, until = 10).toFloat())
+                .fillMaxWidth(WIGHT_CARD)
+                .fillMaxHeight(HEIGHT_CARD)
+                .zIndex(Z_BOTTOM)
+                .rotate(Random.nextInt(from = -10, until = 10).toFloat()),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 3.dp
+            )
         ) {}
     }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(WIGHT_CARD)
+            .fillMaxHeight(HEIGHT_CARD)
+            .zIndex(Z_BOTTOM + 1),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        )
+    ) {}
 }
 
 @Composable
@@ -127,54 +167,117 @@ fun MyCard(
     onClick: (() -> Unit),
     onRight: (() -> Unit),
     onLeft: (() -> Unit),
-    animationEnd: (Animation) -> Unit
+    onAnimationStepComplete: (Animation) -> Unit
 ) {
-
-    Log.d("Animation", "step ${animationStep}")
-
     val isInit = animationStep is Animation.Init
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-    val swipeLength = screenWidth.toFloat() * 2
-
+    val screenWidthPx = with(LocalDensity.current) {
+        screenWidth.dp.toPx()
+    }
 
     var endOffsetX by remember(word) { mutableFloatStateOf(0f) }
     var endOffsetY by remember(word) { mutableFloatStateOf(0f) }
+    var dragEnable = remember(word) { true }
 
     val stateRotationY by animateFloatAsState(
         targetValue = if (hide) 180f else 0f,
-        animationSpec = if (hide) snap() else tween(durationMillis = ROTATION_ANIMATION_DURATION)
+        animationSpec = if (hide) snap() else tween(durationMillis = ROTATION_ANIMATION_DURATION),
     )
 
     val alphaAnimation by animateFloatAsState(
         targetValue = if (animationStep is Animation.Right.Swipe) 0f else 1f,
-        animationSpec = if (isInit) tween(durationMillis = ALPHA_ANIMATION_DURATION) else snap()
+        animationSpec = if (isInit) tween(durationMillis = ALPHA_ANIMATION_DURATION) else snap(),
     )
 
-    val rightSwipeAnimation by animateFloatAsState(
-        targetValue = if (animationStep is Animation.Right.Swipe) swipeLength else 0f,
-        animationSpec = if (isInit) snap() else tween(durationMillis = SWIPE_ANIMATION_DURATION),
+    val animationX by animateFloatAsState(
+        targetValue = when (animationStep) {
+            is Animation.Init -> {
+                if (hide) 0f
+                else endOffsetX
+            }
+
+            is Animation.Right.Swipe -> endOffsetX + screenWidthPx
+            is Animation.Left.SwipeLeft -> {
+                endOffsetX - screenWidthPx
+            }
+
+            is Animation.Left.SwipeRight -> 0f
+
+            else -> endOffsetX
+        },
+        animationSpec = when (animationStep) {
+            is Animation.Left.SwipeLeft -> tween(durationMillis = SWIPE_ANIMATION_DURATION, delayMillis = 100)
+            is Animation.Left.SwipeRight -> tween(SWIPE_ANIMATION_DURATION, easing = FastOutSlowInEasing)
+            is Animation.Right.Swipe -> tween(SWIPE_ANIMATION_DURATION)
+            else -> snap()
+        },
         finishedListener = {
-            if (animationStep is Animation.Right.Swipe) {
-                animationEnd.invoke(Animation.Right.Swipe)
+            when (animationStep) {
+                is Animation.Left.CorrectY -> {}
+
+                is Animation.Left.SwipeRight -> {
+                    endOffsetX = 0f
+                    endOffsetY = 0f
+                    onAnimationStepComplete.invoke(animationStep)
+                }
+
+                else -> {
+                    onAnimationStepComplete.invoke(animationStep)
+                }
             }
         }
     )
 
+    val animationY by animateFloatAsState(
+        targetValue = when (animationStep) {
+            is Animation.Left.CorrectY,
+            is Animation.Left.SwipeRight -> {
+                0f
+            }
+
+            else -> endOffsetY
+        },
+        animationSpec = when (animationStep) {
+            is Animation.Left.CorrectY -> tween(Y_TRANSACTION_TIME)
+            else -> snap()
+        },
+        finishedListener = {
+            if (animationStep is Animation.Left.CorrectY)
+                onAnimationStepComplete.invoke(animationStep)
+        }
+    )
+
+    val zAnimationRotation by animateFloatAsState(
+        targetValue = when (animationStep) {
+            is Animation.Left.SwipeRight,
+            is Animation.Left.CorrectY -> Z_BOTTOM - 1
+
+            else -> Z_TOP
+        },
+        animationSpec = when (animationStep) {
+            is Animation.Left.SwipeRight,
+            is Animation.Left.CorrectY -> tween(SWIPE_ANIMATION_DURATION)
+
+            else -> snap()
+        }
+
+    )
+
     Card(
         modifier = Modifier
-            .fillMaxWidth(0.70f)
-            .fillMaxHeight(0.55f)
+            .fillMaxWidth(WIGHT_CARD)
+            .fillMaxHeight(HEIGHT_CARD)
             .clickable {
                 if (animationStep.isAnimate) return@clickable
-
                 onClick.invoke()
             }
-            .zIndex(10f)
+            .zIndex(zAnimationRotation)
             .graphicsLayer {
-                translationX = endOffsetX + rightSwipeAnimation
-                translationY = endOffsetY
+                translationX = animationX
+                translationY = animationY
+
                 rotationY = stateRotationY
                 cameraDistance = 12f * density
                 alpha = alphaAnimation
@@ -184,10 +287,12 @@ fun MyCard(
                     onDragEnd = {
                         when (endDragAnimation(endOffsetX)) {
                             EndDragSwipe.Left -> {
+                                dragEnable = false
                                 onLeft()
                             }
 
                             EndDragSwipe.Right -> {
+                                dragEnable = false
                                 onRight()
                             }
 
@@ -198,7 +303,7 @@ fun MyCard(
                         }
                     },
                     onDrag = { change, dragAmount ->
-                        if (!hide && !animationStep.isAnimate) {
+                        if (!hide && dragEnable && !animationStep.isAnimate) {
                             endOffsetX += dragAmount.x
                             endOffsetY += dragAmount.y
                         }
@@ -212,22 +317,8 @@ fun MyCard(
     ) {
         WordCard(stateRotationY, word)
     }
+
 }
-
-@Stable
-sealed class Animation(val isAnimate: Boolean) {
-
-    data object Init : Animation(false)
-    sealed class Right(isAnimate: Boolean) : Animation(isAnimate) {
-        data object Swipe : Right(true)
-    }
-
-    sealed class Left(isAnimate: Boolean) : Animation(isAnimate) {
-        data object SwipeLeft : Right(true)
-        data object SwipeRight : Right(true)
-    }
-}
-
 @Composable
 fun WordCard(stateRotationY: Float, word: Word) {
     Column(
@@ -279,4 +370,30 @@ sealed interface EndDragSwipe {
     data object Right : EndDragSwipe
     data object Left : EndDragSwipe
     data object No : EndDragSwipe
+}
+
+
+@Stable
+sealed class Animation(val isAnimate: Boolean) {
+
+    @Stable
+    data object Init : Animation(false)
+
+    @Stable
+    sealed class Right(isAnimate: Boolean) : Animation(isAnimate) {
+        @Stable
+        data object Swipe : Right(true)
+    }
+
+    @Stable
+    sealed class Left(isAnimate: Boolean) : Animation(isAnimate) {
+        @Stable
+        data object SwipeLeft : Right(true)
+
+        @Stable
+        data object CorrectY : Right(true)
+
+        @Stable
+        data object SwipeRight : Right(true)
+    }
 }
