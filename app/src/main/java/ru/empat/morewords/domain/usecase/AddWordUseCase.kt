@@ -10,7 +10,7 @@ class AddWordUseCase @Inject constructor(
     private val repository: WordRepository
 ) {
     suspend operator fun invoke(test: String, translate: String) {
-        val learn = Learn(0, 0, Date(), null, true)
+        val learn = Learn(0, 0, Date(), Date(), false, true)
         val word = Word(0, 1L, test, translate, learn)
         repository.addWord(word)
     }

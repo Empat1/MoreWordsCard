@@ -7,15 +7,17 @@ import java.util.Date
 fun Learn.toDbModel(): LearningProgressWordModel = LearningProgressWordModel(
     learnId = learnId,
     knowledgeLevel = knowledgeLevel,
-    lastReviewed = learnLastRepetition?.time,
+    lastReviewed = learnLastRepetition.time,
     nextReview = learnGoodRepetition.time,
+    isOpposite = isOpposite,
     success = success
 )
 
 fun LearningProgressWordModel.asExternalModel(): Learn = Learn(
     learnId = learnId,
     knowledgeLevel = knowledgeLevel,
-    learnGoodRepetition = Date(nextReview),
-    learnLastRepetition = lastReviewed?.let { Date(it) },
+    learnGoodRepetition = Date(lastReviewed),
+    learnLastRepetition = Date(nextReview),
+    isOpposite = isOpposite,
     success = success
 )

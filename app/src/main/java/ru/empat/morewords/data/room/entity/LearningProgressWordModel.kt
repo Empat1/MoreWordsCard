@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 data class LearningProgressWordModel(
     @PrimaryKey(autoGenerate = true) val learnId: Long = 0,
     val knowledgeLevel: Int = 0,
-    val lastReviewed: Long? = null,
+    val lastReviewed: Long,
     val nextReview: Long,
+    var isOpposite: Boolean,
     val success: Boolean
 )

@@ -8,11 +8,12 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.domain.usecase.GetOldRepeatedWordUseCase
-import ru.empat.morewords.domain.usecase.RepeatWordUseCase
+import ru.empat.morewords.domain.usecase.LearnWordUseCase
 import ru.empat.morewords.presentation.learn.LearnCardStore.Intent
 import ru.empat.morewords.presentation.learn.LearnCardStore.Label
 import ru.empat.morewords.presentation.learn.LearnCardStore.State
 import ru.empat.morewords.presentation.learn.LearnCardStore.State.WordState.*
+import ru.empat.morewords.presentation.learn.LearnCardStoreFactory.Msg.*
 import javax.inject.Inject
 
 interface LearnCardStore : Store<Intent, State, Label> {
@@ -25,7 +26,6 @@ interface LearnCardStore : Store<Intent, State, Label> {
     data class State(
         val wordState: WordState
     ) {
-
         sealed interface WordState {
             data object Init : WordState
 
@@ -33,9 +33,13 @@ interface LearnCardStore : Store<Intent, State, Label> {
 
             data object Error : WordState
 
+            data object Empty : WordState
+
             data class WordLoaded(
                 val word: Word,
-                val isHide: Boolean
+                val isHide: Boolean,
+                val nextWord: Word?,
+                val countLoadedWords: Int
             ) : WordState
         }
     }
@@ -48,22 +52,28 @@ interface LearnCardStore : Store<Intent, State, Label> {
 class LearnCardStoreFactory @Inject constructor(
     private val factory: StoreFactory,
     private val getOldRepeatedWordUseCase: GetOldRepeatedWordUseCase,
-    private val repeatedWordUseCase: RepeatWordUseCase
+    private val repeatedWordUseCase: LearnWordUseCase
 ) {
 
     private sealed interface Action {
         data class WordLoaded(
-            val word: Word
+            val word: Word,
+            val nextWord: Word?,
+            val countWords: Int,
         ) : Action
+
+        data object EmptyList : Action
     }
 
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
                 getOldRepeatedWordUseCase().collect {
-                    if (it == null) return@collect
-
-                    dispatch(Action.WordLoaded(it))
+                    if (it == null) {
+                        dispatch(Action.EmptyList)
+                    } else {
+                        dispatch(Action.WordLoaded(it.word, it.nextWord, it.loadedWords))
+                    }
                 }
             }
         }
@@ -71,14 +81,20 @@ class LearnCardStoreFactory @Inject constructor(
 
     private sealed interface Msg {
         data class Loaded(
-            val word: Word
+            val word: Word,
+            val nextWord: Word?,
+            val countWords: Int
         ) : Msg
 
         data class OpenCard(
-            val word: Word
+            val word: Word,
+            val nextWord: Word?,
+            val countWords: Int,
         ) : Msg
 
         data class LearnCard(val success: Boolean) : Msg
+
+        object EmptyList : Msg
     }
 
     private inner class ExecutorImpl() :
@@ -88,7 +104,13 @@ class LearnCardStoreFactory @Inject constructor(
                 Intent.CardClick -> {
                     when (val state = getState.invoke().wordState) {
                         is WordLoaded -> {
-                            dispatch(Msg.OpenCard(state.word))
+                            dispatch(
+                                Msg.OpenCard(
+                                    state.word,
+                                    state.nextWord,
+                                    state.countLoadedWords
+                                )
+                            )
                         }
 
                         else -> {}
@@ -98,7 +120,6 @@ class LearnCardStoreFactory @Inject constructor(
                 is Intent.Learn -> {
                     scope.launch {
                         repeatedWordUseCase.invoke(intent.wordId, intent.success)
-//                        dispatch(Msg.LearnCard())
                     }
                 }
             }
@@ -110,7 +131,11 @@ class LearnCardStoreFactory @Inject constructor(
         ) {
             when (action) {
                 is Action.WordLoaded -> {
-                    dispatch(Msg.Loaded(action.word))
+                    dispatch(Loaded(action.word, action.nextWord, action.countWords))
+                }
+
+                Action.EmptyList -> {
+                    dispatch(Msg.EmptyList)
                 }
             }
         }
@@ -118,8 +143,25 @@ class LearnCardStoreFactory @Inject constructor(
 
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State = when (msg) {
-            is Msg.Loaded -> copy(wordState = WordLoaded(msg.word, true))
-            is Msg.OpenCard -> copy(wordState = WordLoaded(msg.word, false))
+            is Msg.Loaded -> copy(
+                wordState = WordLoaded(
+                    msg.word,
+                    true,
+                    msg.nextWord,
+                    msg.countWords
+                )
+            )
+
+            is Msg.OpenCard -> copy(
+                wordState = WordLoaded(
+                    msg.word,
+                    false,
+                    msg.nextWord,
+                    msg.countWords
+                )
+            )
+
+            is Msg.EmptyList -> copy(wordState = Empty)
             is Msg.LearnCard -> TODO()
         }
     }

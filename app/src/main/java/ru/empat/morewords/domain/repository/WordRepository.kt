@@ -2,6 +2,7 @@ package ru.empat.morewords.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.empat.morewords.domain.entity.Language
+import ru.empat.morewords.domain.entity.Learn
 import ru.empat.morewords.domain.entity.Word
 
 interface WordRepository {

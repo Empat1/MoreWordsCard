@@ -9,6 +9,7 @@ data class Learn(
     var learnId: Long,
     val knowledgeLevel: Int = 0,
     var learnGoodRepetition: Date,
-    var learnLastRepetition: Date?,
+    var learnLastRepetition: Date,
+    var isOpposite: Boolean,
     var success: Boolean
 ) : Parcelable

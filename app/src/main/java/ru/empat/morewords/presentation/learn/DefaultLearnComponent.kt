@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import ru.empat.morewords.domain.entity.Word
 
@@ -17,6 +18,7 @@ class DefaultLearnComponent @AssistedInject constructor(
 
     private val store = instanceKeeper.getStore { storeFactory.create() }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override val model: StateFlow<LearnCardStore.State> = store.stateFlow
 
     override fun onClick() {

@@ -70,9 +70,8 @@ abstract class UserDatabase : RoomDatabase() {
             instance.dictionaryDao().addDictionaty(DictionaryModel(1, "User", 1))
 
             for(i in 0..10) {
-                val learn = LearningProgressWordModel(i.toLong() , 1, null, 0L, false)
+                val learn = LearningProgressWordModel(i.toLong() , 1, 0L, 0L, false, false)
                 instance.wordDao().insertWord(WordModel(i.toLong(), 1L, "Word $i", "Слово $i", learn))
-
             }
         }
     }

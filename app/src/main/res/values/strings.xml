@@ -10,4 +10,6 @@
     <string name="addCard">Добавить</string>
     <string name="save">Сохранить</string>
     <string name="remove">Удалить</string>
+    <string name="all_words">Все слова</string>
+    <string name="edit_card">Редактирование карточки</string>
 </resources>
