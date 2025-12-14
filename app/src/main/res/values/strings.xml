@@ -12,4 +12,5 @@
     <string name="remove">Удалить</string>
     <string name="all_words">Все слова</string>
     <string name="edit_card">Редактирование карточки</string>
+    <string name="add_word">Добавления слова</string>
 </resources>

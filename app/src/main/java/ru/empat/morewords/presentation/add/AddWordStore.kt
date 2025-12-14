@@ -1,6 +1,5 @@
 package ru.empat.morewords.presentation.add
 
-import androidx.savedstate.savedState
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -11,21 +10,23 @@ import ru.empat.morewords.domain.usecase.AddWordUseCase
 import ru.empat.morewords.presentation.add.AddWordStore.Intent
 import ru.empat.morewords.presentation.add.AddWordStore.Label
 import ru.empat.morewords.presentation.add.AddWordStore.State
+import ru.empat.morewords.presentation.edit.EditCardStore
 import javax.inject.Inject
 
 interface AddWordStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
+        data object ClickBack : Intent
         data class SaveWord(val text: String, val translate: String) : Intent
     }
 
-    data class State(
-        val text: String,
-        val translate: String
-    )
+    sealed interface State{
+        data object Init : State
+        data object Success : State
+    }
 
     sealed interface Label {
-        data object ClickBack : Label
+        data object NavigationBack : Label
     }
 }
 
@@ -37,7 +38,7 @@ class AddWordStoreFactory @Inject constructor(
     fun create(): AddWordStore =
         object : AddWordStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AddWordStore",
-            initialState = State("", ""),
+            initialState = State.Init,
             bootstrapper = BootstrapperImpl(),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -63,6 +64,8 @@ class AddWordStoreFactory @Inject constructor(
                         dispatch(Msg.SaveWord)
                     }
                 }
+
+                Intent.ClickBack -> publish(Label.NavigationBack)
             }
         }
 
@@ -74,7 +77,7 @@ class AddWordStoreFactory @Inject constructor(
         override fun State.reduce(message: Msg): State =
             when (message) {
                 is Msg.SaveWord -> {
-                    copy("", "")
+                    State.Success
                 }
             }
     }

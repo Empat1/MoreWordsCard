@@ -6,5 +6,7 @@ interface AddWordComponent {
 
     val model: StateFlow<AddWordStore.State>
 
+    fun onBackClick()
+
     fun onClickAdd(text: String, translate: String)
 }

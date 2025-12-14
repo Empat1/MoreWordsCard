@@ -44,7 +44,9 @@ android {
 }
 
 dependencies {
+
     implementation(libs.room.core)
+    implementation(libs.androidx.compose.adaptive.layout)
     ksp(libs.room.compiler)
 
     implementation(libs.dagger.core)

@@ -68,6 +68,9 @@ class DefaultRootComponent @AssistedInject constructor(
 
             Config.AddCard -> {
                 val component = addCardComponentFactory.create(
+                    {
+                        navigation.pop()
+                    },
                     componentContext
                 )
                 AddCard(component)
