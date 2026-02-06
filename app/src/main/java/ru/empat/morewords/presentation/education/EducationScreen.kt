@@ -10,9 +10,16 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +51,7 @@ fun EducationScreen(component: EducationComponent) {
             when (val current = state.statisticState) {
                 is EducationStore.State.StatisticState.Error -> {
                 }
+
                 EducationStore.State.StatisticState.Init -> {}
                 EducationStore.State.StatisticState.Loading -> {}
                 is EducationStore.State.StatisticState.Loaded -> {
@@ -58,7 +67,7 @@ fun EducationScreen(component: EducationComponent) {
 @Composable
 fun Toolbar(language: List<Language>) {
     TopAppBar(
-        language.firstOrNull()?.name ?:""
+        language.firstOrNull()?.name ?: ""
     )
 }
 
@@ -81,28 +90,44 @@ fun Loaded(component: EducationComponent, state: EducationStore.State.StatisticS
                 .fillMaxWidth()
                 .padding(12.dp)
 
-            Column(verticalArrangement = Arrangement.Bottom) {
-                Button(
-                    modifier = modifier,
-                    onClick = { component.onClickEducation() }
-                ) {
-                    Text(text = stringResource(R.string.start))
-                }
+            Column(
+                verticalArrangement = Arrangement.Bottom
+            ) {
 
-                Button(
+                Row(
                     modifier = modifier,
-                    onClick = { component.onShowList() }
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(R.string.showList))
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = { component.onClickEducation() }
+                    ) {
+                        Text(text = stringResource(R.string.start))
+                    }
+
+                    IconButton(
+                        onClick = { component.addWord() },
+                        modifier = Modifier
+                            .clip(CircleShape),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add"
+                        )
+                    }
                 }
 
                 Button(
                     modifier = modifier,
                     onClick = {
-                        component.addWord()
+                        component.onShowList()
                     }
                 ) {
-                    Text(text = stringResource(R.string.addCard))
+                    Text(text = stringResource(R.string.all_words))
                 }
             }
         }
