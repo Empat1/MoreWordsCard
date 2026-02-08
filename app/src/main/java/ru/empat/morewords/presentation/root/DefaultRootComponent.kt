@@ -44,8 +44,10 @@ class DefaultRootComponent @AssistedInject constructor(
         return when (config) {
             Config.CardLean -> {
                 val component = learnCardComponentFactory.create(
-                    componentContext,
-                    {}
+                    componentContext = componentContext,
+                    onBackClicked = {
+                        navigation.pop()
+                    }
                 )
                 LearnCard(component)
             }
@@ -117,7 +119,7 @@ class DefaultRootComponent @AssistedInject constructor(
         data object ListWord : Config
 
         @Parcelize
-        data class EditWord(val word: Word): Config
+        data class EditWord(val word: Word) : Config
     }
 
     @AssistedFactory
