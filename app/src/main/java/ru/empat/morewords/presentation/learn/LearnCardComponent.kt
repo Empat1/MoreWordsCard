@@ -9,4 +9,6 @@ interface LearnCardComponent {
     fun onClick()
 
     fun learn(wordId: Long, success: Boolean)
+
+    fun onBackClick()
 }

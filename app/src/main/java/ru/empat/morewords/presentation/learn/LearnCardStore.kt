@@ -21,6 +21,7 @@ interface LearnCardStore : Store<Intent, State, Label> {
     sealed interface Intent {
         data object CardClick : Intent
         data class Learn(val wordId: Long, val success: Boolean) : Intent
+        object BackClick : Intent
     }
 
     data class State(
@@ -45,7 +46,7 @@ interface LearnCardStore : Store<Intent, State, Label> {
     }
 
     sealed interface Label {
-        data object ClickBack : Label
+        data object NavigationBack : Label
     }
 }
 
@@ -105,7 +106,7 @@ class LearnCardStoreFactory @Inject constructor(
                     when (val state = getState.invoke().wordState) {
                         is WordLoaded -> {
                             dispatch(
-                                Msg.OpenCard(
+                                OpenCard(
                                     state.word,
                                     state.nextWord,
                                     state.countLoadedWords
@@ -120,6 +121,12 @@ class LearnCardStoreFactory @Inject constructor(
                 is Intent.Learn -> {
                     scope.launch {
                         repeatedWordUseCase.invoke(intent.wordId, intent.success)
+                    }
+                }
+
+                Intent.BackClick -> {
+                    scope.launch {
+                        publish(Label.NavigationBack)
                     }
                 }
             }

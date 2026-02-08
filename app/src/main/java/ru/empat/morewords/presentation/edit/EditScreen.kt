@@ -27,7 +27,7 @@ import ru.empat.morewords.ui.component.TopAppBar
 fun EditScreen(component: EditCardComponent) {
 
     Scaffold(
-        topBar = { Topbar({ component.onBackClick() }) }
+        topBar = { Topbar { component.onBackClick() } }
     ) { paddingValues ->
 
         Box(

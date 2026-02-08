@@ -1,6 +1,5 @@
 package ru.empat.morewords.presentation.learn
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
@@ -12,8 +11,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fitInside
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -29,12 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.empat.morewords.domain.entity.Word
+import ru.empat.morewords.presentation.add.Topbar
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -54,21 +58,36 @@ const val DETECT_DRAG_LONG = 100
 
 @Composable
 fun LearnCardContent(component: LearnCardComponent) {
-    val state by component.model.collectAsState()
 
-    when (val currentState = state.wordState) {
-        LearnCardStore.State.WordState.Error -> {}
-        LearnCardStore.State.WordState.Init -> {
 
-        }
+    Scaffold(
+        topBar = { Topbar({ component.onBackClick() }) }
+    ) { paddingValues ->
 
-        LearnCardStore.State.WordState.Loading -> {}
-        is LearnCardStore.State.WordState.WordLoaded -> {
-            LoadedWord(component, currentState)
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(start = 8.dp, end = 8.dp)
+                .fitInside(WindowInsetsRulers.Ime.current),
+            contentAlignment = Alignment.Center
+        ) {
+            val state by component.model.collectAsState()
+            when (val currentState = state.wordState) {
+                LearnCardStore.State.WordState.Error -> {}
+                LearnCardStore.State.WordState.Init -> {
 
-        LearnCardStore.State.WordState.Empty -> {
-            Empty()
+                }
+
+                LearnCardStore.State.WordState.Loading -> {}
+                is LearnCardStore.State.WordState.WordLoaded -> {
+                    LoadedWord(component, currentState)
+                }
+
+                LearnCardStore.State.WordState.Empty -> {
+                    Empty()
+                }
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ import ru.empat.morewords.ui.component.TopAppBar
 @Composable
 fun AddWordScreen(component: AddWordComponent) {
     Scaffold(
-        topBar = { Topbar({ component.onBackClick() }) }
+        topBar = { Topbar { component.onBackClick() } }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -91,7 +91,7 @@ private fun WordScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Topbar(onBackClick: () -> Unit) {
+internal fun Topbar(onBackClick: () -> Unit) {
     TopAppBar(
         titleText = stringResource(R.string.add_word),
         onBackClick = onBackClick
