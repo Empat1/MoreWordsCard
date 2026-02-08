@@ -44,7 +44,7 @@ val DarkDefaultColorScheme = darkColorScheme(
  */
 @VisibleForTesting
 val LightAndroidColorScheme = lightColorScheme(
-    primary = Green40,
+    primary = UniverseBlue,
     onPrimary = White,
     primaryContainer = Green90,
     onPrimaryContainer = Green10,
@@ -60,11 +60,11 @@ val LightAndroidColorScheme = lightColorScheme(
     onError = White,
     errorContainer = Red90,
     onErrorContainer = Red10,
-    background = DarkGreenGray99,
+    background = Blue,
     onBackground = DarkGreenGray10,
     surface = DarkGreenGray99,
     onSurface = DarkGreenGray10,
-    surfaceVariant = GreenGray90,
+    surfaceVariant = White,
     onSurfaceVariant = GreenGray30,
     inverseSurface = DarkGreenGray20,
     inverseOnSurface = DarkGreenGray95,

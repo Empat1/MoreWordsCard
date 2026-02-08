@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.domain.usecase.GetAllWordsUseCase
+import ru.empat.morewords.domain.usecase.RemoveWordUseCase
 import ru.empat.morewords.presentation.list.ListWordStore.Intent
 import ru.empat.morewords.presentation.list.ListWordStore.Label
 import ru.empat.morewords.presentation.list.ListWordStore.State
@@ -35,7 +36,8 @@ interface ListWordStore : Store<Intent, State, Label> {
 
 class ListWordStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val getAllWordsUseCase: GetAllWordsUseCase
+    private val getAllWordsUseCase: GetAllWordsUseCase,
+    private val removeWordUseCase: RemoveWordUseCase
 ) {
 
     fun create(): ListWordStore =
@@ -68,7 +70,7 @@ class ListWordStoreFactory @Inject constructor(
         }
     }
 
-    private class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 is Intent.ClickWord -> {
@@ -76,8 +78,10 @@ class ListWordStoreFactory @Inject constructor(
                 }
 
                 is Intent.RemoveWord -> {
-                    //TODO usecase remove
-                    publish(Label.ClickBack)
+                    scope.launch {
+                        removeWordUseCase.invoke(intent.word.wordId)
+                        publish(Label.ClickBack)
+                    }
                 }
             }
         }
@@ -96,11 +100,11 @@ class ListWordStoreFactory @Inject constructor(
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State =
             when (msg) {
-                is Msg.Loaded -> {
+                is Loaded -> {
                     State.Loaded(msg.words)
                 }
 
-                Msg.Loading -> {
+                Loading -> {
                     State.Loading
                 }
             }

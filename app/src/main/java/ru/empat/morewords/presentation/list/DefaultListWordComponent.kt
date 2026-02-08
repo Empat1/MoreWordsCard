@@ -31,6 +31,10 @@ class DefaultListWordComponent @AssistedInject constructor(
         onWordClicked(word)
     }
 
+    override fun remove(word: Word) {
+        store.accept(ListWordStore.Intent.RemoveWord(word))
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(
