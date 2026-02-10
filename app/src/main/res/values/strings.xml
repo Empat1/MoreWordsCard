@@ -13,4 +13,6 @@
     <string name="all_words">Все слова</string>
     <string name="edit_card">Редактирование карточки</string>
     <string name="add_word">Добавления слова</string>
+    <string name="Word">Слово</string>
+    <string name="Translate">Перевод</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 
 @VisibleForTesting
@@ -44,8 +45,8 @@ val DarkDefaultColorScheme = darkColorScheme(
  */
 @VisibleForTesting
 val LightAndroidColorScheme = lightColorScheme(
-    primary = UniverseBlue,
-    onPrimary = White,
+    primary = Planetary,
+    onPrimary = Black,
     primaryContainer = Green90,
     onPrimaryContainer = Green10,
     secondary = DarkGreen40,
@@ -60,11 +61,11 @@ val LightAndroidColorScheme = lightColorScheme(
     onError = White,
     errorContainer = Red90,
     onErrorContainer = Red10,
-    background = Blue,
+    background = SkyBlue,
     onBackground = DarkGreenGray10,
-    surface = DarkGreenGray99,
+    surface = WhiteMilkyWay,
     onSurface = DarkGreenGray10,
-    surfaceVariant = White,
+    surfaceVariant = WhiteMilkyWay,
     onSurfaceVariant = GreenGray30,
     inverseSurface = DarkGreenGray20,
     inverseOnSurface = DarkGreenGray95,

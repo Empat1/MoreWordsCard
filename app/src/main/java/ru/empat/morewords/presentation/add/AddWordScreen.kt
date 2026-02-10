@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.empat.morewords.R
+import ru.empat.morewords.presentation.edit.WordFiled
 import ru.empat.morewords.ui.component.TopAppBar
 
 
@@ -61,21 +62,14 @@ private fun WordScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(),
-            value = text.value,
-            onValueChange = { text.value = it }
-        )
+        WordFiled(text.value, stringResource(R.string.Word)){
+            text.value = it
+        }
 
-        TextField(
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(),
-            value = translate.value,
-            onValueChange = { translate.value = it }
-        )
+
+        WordFiled(translate.value, stringResource(R.string.Translate)){
+            translate.value = it
+        }
 
         Button(
             onClick = {
