@@ -73,6 +73,9 @@ class DefaultRootComponent @AssistedInject constructor(
                     {
                         navigation.pop()
                     },
+                    {
+                        navigation.push(Config.EditWord(it))
+                    },
                     componentContext
                 )
                 AddCard(component)

@@ -15,4 +15,6 @@
     <string name="add_word">Добавления слова</string>
     <string name="Word">Слово</string>
     <string name="Translate">Перевод</string>
+    <string name="DublicateCard">Дублирующая карта</string>
+    <string name="ChangeOriginal">Изменить оригинал</string>
 </resources>

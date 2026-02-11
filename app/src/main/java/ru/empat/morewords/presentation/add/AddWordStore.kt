@@ -6,11 +6,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
+import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.domain.usecase.AddWordUseCase
+import ru.empat.morewords.domain.usecase.GetWordUseCase
+import ru.empat.morewords.domain.usecase.ValidationWordUseCase
 import ru.empat.morewords.presentation.add.AddWordStore.Intent
 import ru.empat.morewords.presentation.add.AddWordStore.Label
 import ru.empat.morewords.presentation.add.AddWordStore.State
-import ru.empat.morewords.presentation.edit.EditCardStore
+import ru.empat.morewords.presentation.add.AddWordStore.State.Input
+import ru.empat.morewords.presentation.add.AddWordStore.State.Input.Error.*
 import javax.inject.Inject
 
 interface AddWordStore : Store<Intent, State, Label> {
@@ -18,11 +22,24 @@ interface AddWordStore : Store<Intent, State, Label> {
     sealed interface Intent {
         data object ClickBack : Intent
         data class SaveWord(val text: String, val translate: String) : Intent
+
+        data class InputWord(val text: String, val translate: String) : Intent
     }
 
-    sealed interface State{
+    sealed interface State {
         data object Init : State
         data object Success : State
+
+        sealed interface Input : State {
+            data object Conform : Input
+
+            sealed interface Error : Input {
+                data class HasWord(val word: Word) : Error
+                data class Validation(val text: Int) : Error
+            }
+        }
+
+        data class Error(val word: Word) : State
     }
 
     sealed interface Label {
@@ -32,7 +49,9 @@ interface AddWordStore : Store<Intent, State, Label> {
 
 class AddWordStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val addWordUseCase: AddWordUseCase
+    private val addWordUseCase: AddWordUseCase,
+    private val getWordUseCase: GetWordUseCase,
+    private val validationWordUseCase: ValidationWordUseCase
 ) {
 
     fun create(): AddWordStore =
@@ -48,6 +67,12 @@ class AddWordStoreFactory @Inject constructor(
 
     private sealed interface Msg {
         data object SaveWord : Msg
+
+        data class Error(val word: Word) : Msg
+
+        data object ConformInput : Msg
+        data class HasWord(val word: Word) : Msg
+        data class ValidationError(val text: Int) : Msg
     }
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
@@ -66,6 +91,24 @@ class AddWordStoreFactory @Inject constructor(
                 }
 
                 Intent.ClickBack -> publish(Label.NavigationBack)
+                is Intent.InputWord -> {
+                    scope.launch {
+                        val validationError =
+                            validationWordUseCase.getErrorOrNull(intent.text, intent.translate)
+
+                        if(validationError != null){
+                            dispatch(Msg.ValidationError(validationError))
+                        }
+                        
+                        getWordUseCase(intent.text).collect {
+                            if (it != null) {
+                                dispatch(Msg.HasWord(it))
+                            } else {
+                                dispatch(Msg.ConformInput)
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -78,6 +121,22 @@ class AddWordStoreFactory @Inject constructor(
             when (message) {
                 is Msg.SaveWord -> {
                     State.Success
+                }
+
+                is Msg.Error -> {
+                    State.Error(message.word)
+                }
+
+                Msg.ConformInput -> {
+                    Input.Conform
+                }
+
+                is Msg.HasWord -> {
+                    HasWord(message.word)
+                }
+
+                is Msg.ValidationError -> {
+                    Validation(message.text)
                 }
             }
     }

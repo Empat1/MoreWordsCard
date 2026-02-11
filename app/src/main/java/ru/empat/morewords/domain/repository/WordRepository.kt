@@ -24,4 +24,6 @@ interface WordRepository {
     fun getAllWords(): Flow<List<Word>>
 
     fun getWordById(id: Long): Flow<Word?>
+
+    fun getWorld(text: String): Flow<Word?>
 }

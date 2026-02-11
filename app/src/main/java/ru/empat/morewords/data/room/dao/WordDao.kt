@@ -20,6 +20,8 @@ interface WordDao {
     @Query("SELECT * FROM word WHERE id = :id")
     fun getWordById(id: Long): Flow<WordModel?>
 
+    @Query("SELECT * FROM word WHERE text = :text")
+    fun getWordByText(text: String): Flow<WordModel?>
     @Query("SELECT * FROM word WHERE dictionaryId = :id")
     fun getWordByDictionary(id: Long): Flow<List<WordModel>>
 
