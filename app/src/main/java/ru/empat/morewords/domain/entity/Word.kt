@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Word(
-    var wordId: Long,
-    var dictionaryId: Long,
-    var text: String,
-    var translate: String,
-    var learn: Learn
+    val wordId: Long,
+    val dictionaryId: Long,
+    val text: String,
+    val translate: String,
+    val learn: Learn
 ) : Parcelable
 

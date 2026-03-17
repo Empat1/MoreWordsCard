@@ -9,13 +9,18 @@ import ru.empat.morewords.data.room.UserDatabase
 import ru.empat.morewords.data.room.dao.DictionaryDao
 import ru.empat.morewords.data.room.dao.LanguageDao
 import ru.empat.morewords.data.room.dao.WordDao
+import ru.empat.morewords.data.room.repository.TranslateRepositoryImpl
+import ru.empat.morewords.domain.repository.TranslateRepository
 import ru.empat.morewords.domain.repository.WordRepository
 
 @Module
 interface DataModule {
 
     @[ApplicationScope Binds]
-    fun bindRepository(impl: WorkRepositoryImpl): WordRepository
+    fun bindWorkRepository(impl: WorkRepositoryImpl): WordRepository
+
+    @[ApplicationScope Binds]
+    fun bindTranslateRepository(impl: TranslateRepositoryImpl): TranslateRepository
 
     companion object {
         @[ApplicationScope Provides]

@@ -6,11 +6,12 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
+import ru.empat.morewords.domain.entity.Language
+import ru.empat.morewords.domain.repository.TranslateRepository
 import ru.empat.morewords.domain.usecase.AddWordUseCase
 import ru.empat.morewords.presentation.add.AddWordStore.Intent
 import ru.empat.morewords.presentation.add.AddWordStore.Label
 import ru.empat.morewords.presentation.add.AddWordStore.State
-import ru.empat.morewords.presentation.edit.EditCardStore
 import javax.inject.Inject
 
 interface AddWordStore : Store<Intent, State, Label> {
@@ -18,11 +19,14 @@ interface AddWordStore : Store<Intent, State, Label> {
     sealed interface Intent {
         data object ClickBack : Intent
         data class SaveWord(val text: String, val translate: String) : Intent
+        data class Translate(val text: String) : Intent
     }
 
-    sealed interface State{
+    sealed interface State {
         data object Init : State
         data object Success : State
+
+        data class Translated(val text: String) : State
     }
 
     sealed interface Label {
@@ -32,7 +36,8 @@ interface AddWordStore : Store<Intent, State, Label> {
 
 class AddWordStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val addWordUseCase: AddWordUseCase
+    private val addWordUseCase: AddWordUseCase,
+    private val repository: TranslateRepository //TODO usecase
 ) {
 
     fun create(): AddWordStore =
@@ -48,6 +53,7 @@ class AddWordStoreFactory @Inject constructor(
 
     private sealed interface Msg {
         data object SaveWord : Msg
+        data class TranslateWord(val text: String) : Msg
     }
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
@@ -66,6 +72,14 @@ class AddWordStoreFactory @Inject constructor(
                 }
 
                 Intent.ClickBack -> publish(Label.NavigationBack)
+                is Intent.Translate -> {
+                    scope.launch {
+                        repository.saveSetting(Language.Russian, Language.EN)
+                        repository.translate(intent.text) {
+                            dispatch(Msg.TranslateWord(it))
+                        }
+                    }
+                }
             }
         }
 
@@ -78,6 +92,10 @@ class AddWordStoreFactory @Inject constructor(
             when (message) {
                 is Msg.SaveWord -> {
                     State.Success
+                }
+
+                is Msg.TranslateWord -> {
+                    State.Translated(message.text)
                 }
             }
     }

@@ -67,6 +67,8 @@ dependencies {
 
     implementation(libs.glide.compose)
 
+    implementation("com.google.mlkit:translate:17.0.3")
+
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)

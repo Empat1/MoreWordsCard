@@ -1,9 +1,12 @@
 package ru.empat.morewords.presentation.learn
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +45,8 @@ import kotlin.random.Random
 const val ROTATION = 180f
 const val ROTATION_ANIMATION_DURATION = 400
 const val SWIPE_ANIMATION_DURATION = 300
-const val Y_TRANSACTION_TIME = 300
+const val ALPHA_ANIMATION_DURATION = 200
+const val Y_TRANSACTION_TIME = 100
 
 const val WIGHT_CARD = 0.65f
 const val HEIGHT_CARD = 0.5f
@@ -98,7 +102,7 @@ private fun LoadedWord(
     ) {
         MyCard(word = state.word, hide = state.isHide, onClick = {
             component.onClick()
-        }, animationStep = animationStep.value, onRight = {
+        },animationStep = animationStep.value, onRight = {
             animationStep.value = Animation.Right.Swipe
         }, onLeft = {
             animationStep.value = Animation.Left.SwipeLeft
@@ -123,20 +127,17 @@ private fun LoadedWord(
                     animationStep.value = Animation.Init
                 }
 
-
                 Animation.Right.Swipe -> {
                     component.learn(wordId, true)
                     animationStep.value = Animation.Init
                 }
-
-
             }
         })
-        println(state.nextWord)
 
-        if (state.nextWord != null) {
-            BackgroundCard(state.nextWord)
-            BackgroundCards(state.countLoadedWords - 1)
+
+        BackgroundCards(state.countLoadedWords - 1)
+        if(state.nextWord != null) {
+            BackgroundCard(state.nextWord, state.isHide)
         }
     }
 }
@@ -149,16 +150,44 @@ private fun BackgroundCards(count: Int) {
 }
 
 @Composable
-private fun BackgroundCard(word: Word) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(WIGHT_CARD)
-            .fillMaxHeight(HEIGHT_CARD)
-            .zIndex(Z_BOTTOM + 1), elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+private fun BackgroundCard(word: Word, isHide: Boolean) {
+    AnimatedVisibility(
+        isHide,
+        enter = fadeIn(
+            animationSpec = tween(
+                durationMillis = 200,
+                delayMillis = 200,
+                easing = LinearOutSlowInEasing
+            )
+        ),
+        exit = shrinkOut(
+            animationSpec = tween(
+                durationMillis = 200,
+                delayMillis = 200,
+                easing = LinearOutSlowInEasing
+            )
         )
     ) {
-        TextCard(word)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(WIGHT_CARD)
+                .fillMaxHeight(HEIGHT_CARD)
+                .zIndex(Z_BOTTOM + 1), elevation = CardDefaults.cardElevation(
+                defaultElevation = 2.dp
+            )
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = if (word.learn.isOpposite) word.translate else word.text,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }
 
@@ -171,7 +200,7 @@ private fun EntityCard() {
             .zIndex(Z_BOTTOM)
             .rotate(Random.nextInt(from = -10, until = 10).toFloat()),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp
+            defaultElevation = 2.dp
         )
     ) {}
 }
@@ -218,7 +247,6 @@ fun MyCard(
             else -> endOffsetX
         }, animationSpec = when (animationStep) {
             is Animation.Init -> snap()
-            is Animation.Right.Swipe -> tween(SWIPE_ANIMATION_DURATION)
             else -> tween(SWIPE_ANIMATION_DURATION)
         }, finishedListener = {
             when (animationStep) {
@@ -232,6 +260,12 @@ fun MyCard(
 
                 is Animation.Left.SwipeLeft -> {
                     if (it == endOffsetX - screenWidthPx) {
+                        onAnimationStepComplete.invoke(animationStep)
+                    }
+                }
+
+                is Animation.Right.Swipe -> {
+                    if(it == endOffsetX + screenWidthPx){
                         onAnimationStepComplete.invoke(animationStep)
                     }
                 }
@@ -277,6 +311,11 @@ fun MyCard(
         }
     )
 
+    val alphaAnimation by animateFloatAsState(
+        targetValue = if (animationStep is Animation.Right.Swipe) 0f else 1f,
+        animationSpec = if (animationStep == Animation.Init) tween(durationMillis = ALPHA_ANIMATION_DURATION) else snap(),
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth(WIGHT_CARD)
@@ -289,6 +328,7 @@ fun MyCard(
             .graphicsLayer {
                 translationX = animationX
                 translationY = animationY
+                alpha = alphaAnimation
 
                 rotationY = stateRotationY
                 cameraDistance = 12f * density
@@ -319,7 +359,7 @@ fun MyCard(
                     change.consume()
                 })
             }, elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
+            defaultElevation = 2.dp
         )
     ) {
         TextCard(stateRotationY, word)
@@ -379,7 +419,7 @@ private fun TextCard(word: Word) {
     }
 }
 
-fun endDragAnimation(endOffsetX: Float): EndDragSwipe {
+private fun endDragAnimation(endOffsetX: Float): EndDragSwipe {
     if (abs(endOffsetX) < DETECT_DRAG_LONG)
         return EndDragSwipe.No
     return if (endOffsetX > 0) {

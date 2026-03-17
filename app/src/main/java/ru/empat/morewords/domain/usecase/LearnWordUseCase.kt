@@ -41,7 +41,7 @@ class LearnWordUseCase @Inject constructor(
             )
         }
 
-        word.learn = learn
+        word.copy(learn = learn)
 
         repository.editWord(word)
     }

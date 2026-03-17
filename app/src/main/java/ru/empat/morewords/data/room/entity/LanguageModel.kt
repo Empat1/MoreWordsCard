@@ -5,8 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "language")
 class LanguageModel(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val name: String,
-    val code: String
+    @PrimaryKey
+    val id: Long = 0
 )

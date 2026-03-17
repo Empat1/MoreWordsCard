@@ -34,7 +34,6 @@ interface LearnCardStore : Store<Intent, State, Label> {
             data object Error : WordState
 
             data object Empty : WordState
-
             data class WordLoaded(
                 val word: Word,
                 val isHide: Boolean,

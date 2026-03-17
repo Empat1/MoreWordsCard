@@ -9,4 +9,6 @@ interface AddWordComponent {
     fun onBackClick()
 
     fun onClickAdd(text: String, translate: String)
+
+    fun translate(text: String)
 }

@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -39,11 +40,17 @@ fun AddWordScreen(component: AddWordComponent) {
             contentAlignment = Alignment.Center
         ) {
 
+            val model = component.model.collectAsState()
+            val state = model.value
+
             WordScreen(
                 addClick = { text, translate ->
                     component.onClickAdd(text, translate)
-
-                }
+                },
+                textChange = {
+                    component.translate(it)
+                },
+                translate = if(state is AddWordStore.State.Translated) state.text else ""
             )
         }
     }
@@ -51,10 +58,12 @@ fun AddWordScreen(component: AddWordComponent) {
 
 @Composable
 private fun WordScreen(
-    addClick: (String, String) -> Unit
+    addClick: (String, String) -> Unit,
+    textChange: (String) -> Unit,
+    translate: String = ""
 ) {
     val text = rememberSaveable { mutableStateOf("") }
-    val translate = rememberSaveable { mutableStateOf("") }
+    val translate = rememberSaveable(translate) { mutableStateOf(translate) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -66,7 +75,10 @@ private fun WordScreen(
                 .padding(8.dp)
                 .focusable(),
             value = text.value,
-            onValueChange = { text.value = it }
+            onValueChange = {
+                text.value = it
+                textChange.invoke(it)
+            }
         )
 
         TextField(

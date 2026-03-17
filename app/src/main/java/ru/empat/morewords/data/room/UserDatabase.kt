@@ -65,8 +65,8 @@ abstract class UserDatabase : RoomDatabase() {
 
         private suspend fun initDb(instance: UserDatabase) {
 
-            instance.languageDao().insert(LanguageModel(1, "English", "En"))
-            instance.languageDao().insert(LanguageModel(2, "Русский", "Ru"))
+            instance.languageDao().insert(LanguageModel(1))
+            instance.languageDao().insert(LanguageModel(2))
             instance.dictionaryDao().addDictionaty(DictionaryModel(1, "User", 1))
 
             for(i in 0..10) {

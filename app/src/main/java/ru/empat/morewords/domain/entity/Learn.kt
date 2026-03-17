@@ -6,10 +6,10 @@ import java.util.Date
 
 @Parcelize
 data class Learn(
-    var learnId: Long,
+    val learnId: Long,
     val knowledgeLevel: Int = 0,
-    var learnGoodRepetition: Date,
-    var learnLastRepetition: Date,
-    var isOpposite: Boolean,
-    var success: Boolean
+    val learnGoodRepetition: Date,
+    val learnLastRepetition: Date,
+    val isOpposite: Boolean,
+    val success: Boolean
 ) : Parcelable

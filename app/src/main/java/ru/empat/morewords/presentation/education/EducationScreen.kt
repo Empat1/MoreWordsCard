@@ -58,7 +58,7 @@ fun EducationScreen(component: EducationComponent) {
 @Composable
 fun Toolbar(language: List<Language>) {
     TopAppBar(
-        language.firstOrNull()?.name ?:""
+        language.firstOrNull()?.title ?:""
     )
 }
 

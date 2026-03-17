@@ -42,9 +42,15 @@ class DefaultAddWordComponent @AssistedInject constructor(
         store.accept(AddWordStore.Intent.SaveWord(text, translate))
     }
 
+    override fun translate(text: String) {
+        store.accept(AddWordStore.Intent.Translate(text))
+    }
+
     override fun onBackClick() {
         store.accept(AddWordStore.Intent.ClickBack)
     }
+
+
     @AssistedFactory
     interface Factory {
         fun create(

@@ -1,7 +1,9 @@
 package ru.empat.morewords.domain.entity
 
-data class Language(
+enum class Language(
     var id :Long,
-    var name:String,
-    val code: String
-)
+    var title:String
+) {
+    EN(1, "Английский"),
+    Russian(2, "Русский")
+}
