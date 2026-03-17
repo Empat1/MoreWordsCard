@@ -10,4 +10,6 @@ interface ListWordComponent {
     fun clickBack()
 
     fun openWord(word: Word)
+
+    fun remove(word: Word)
 }

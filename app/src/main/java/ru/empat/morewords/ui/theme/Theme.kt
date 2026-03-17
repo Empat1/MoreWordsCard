@@ -1,22 +1,20 @@
 package ru.empat.morewords.ui.theme
 
-import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.White
 
 @VisibleForTesting
 val DarkDefaultColorScheme = darkColorScheme(
     primary = Purple80,
-    onPrimary = Purple20,
+    onPrimary = White,
     primaryContainer = Purple30,
     onPrimaryContainer = Purple90,
     secondary = Orange80,
@@ -47,27 +45,27 @@ val DarkDefaultColorScheme = darkColorScheme(
  */
 @VisibleForTesting
 val LightAndroidColorScheme = lightColorScheme(
-    primary = Green40,
-    onPrimary = Color.White,
+    primary = Planetary,
+    onPrimary = Black,
     primaryContainer = Green90,
     onPrimaryContainer = Green10,
     secondary = DarkGreen40,
-    onSecondary = Color.White,
+    onSecondary = White,
     secondaryContainer = DarkGreen90,
     onSecondaryContainer = DarkGreen10,
     tertiary = Teal40,
-    onTertiary = Color.White,
+    onTertiary = White,
     tertiaryContainer = Teal90,
     onTertiaryContainer = Teal10,
     error = Red40,
-    onError = Color.White,
+    onError = White,
     errorContainer = Red90,
     onErrorContainer = Red10,
-    background = DarkGreenGray99,
+    background = SkyBlue,
     onBackground = DarkGreenGray10,
-    surface = DarkGreenGray99,
+    surface = WhiteMilkyWay,
     onSurface = DarkGreenGray10,
-    surfaceVariant = GreenGray90,
+    surfaceVariant = WhiteMilkyWay,
     onSurfaceVariant = GreenGray30,
     inverseSurface = DarkGreenGray20,
     inverseOnSurface = DarkGreenGray95,

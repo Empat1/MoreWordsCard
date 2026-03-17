@@ -36,7 +36,7 @@ fun TopAppBar(
             }
         },
         colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
+            containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onTertiary,
             actionIconContentColor = MaterialTheme.colorScheme.onTertiary,
             navigationIconContentColor = MaterialTheme.colorScheme.onTertiary,

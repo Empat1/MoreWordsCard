@@ -71,4 +71,8 @@ class WorkRepositoryImpl @Inject constructor(
     override fun getWordById(id: Long): Flow<Word?> {
         return wordDao.getWordById(id).map { it?.asExternalModel() }
     }
+
+    override fun getWorld(text: String): Flow<Word?> {
+        return wordDao.getWordByText(text).map { it?.asExternalModel() }
+    }
 }

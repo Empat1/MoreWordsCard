@@ -1,12 +1,10 @@
 package ru.empat.morewords.presentation.education
 
-import androidx.room.util.copy
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 import ru.empat.morewords.domain.entity.Language
 import ru.empat.morewords.domain.usecase.GetLanguagesUseCase
@@ -92,8 +90,6 @@ class EducationStoreFactory @Inject constructor(
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-//                val language = getLanguageUseCase
-//                dispatch(Action.LoadedLanguage(language))
                 getLanguageUseCase().collect {
                     dispatch(Action.LanguagesLoaded(it))
                 }
