@@ -5,8 +5,12 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import ru.empat.morewords.domain.entity.Language
+import ru.empat.morewords.domain.usecase.GetCountAllWordsUseCase
+import ru.empat.morewords.domain.usecase.GetCountRepeatWordsUseCase
 import ru.empat.morewords.domain.usecase.GetLanguagesUseCase
 import ru.empat.morewords.presentation.education.EducationStore.Intent
 import ru.empat.morewords.presentation.education.EducationStore.Label
@@ -33,7 +37,7 @@ interface EducationStore : Store<Intent, State, Label> {
 
             data class Loaded(
                 val wordForLearn: Int,
-                val wordForRepeat: Int,
+                val deyStreak: Int,
                 val completeWord: Int
             ) : StatisticState
         }
@@ -48,7 +52,9 @@ interface EducationStore : Store<Intent, State, Label> {
 
 class EducationStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val getLanguageUseCase: GetLanguagesUseCase
+    private val getLanguageUseCase: GetLanguagesUseCase,
+    private val getCountAllWordsUseCase: GetCountAllWordsUseCase,
+    private val getCountRepeatWordsUseCase: GetCountRepeatWordsUseCase
 ) {
 
     fun create(): EducationStore =
@@ -56,7 +62,7 @@ class EducationStoreFactory @Inject constructor(
             name = "StoreFactory",
             initialState = State(
                 emptyList(),
-                State.StatisticState.Loaded(1, 2, 3)
+                State.StatisticState.Init
             ),
             bootstrapper = BootstrapperImpl(),
             executorFactory = ::ExecutorImpl,
@@ -65,9 +71,9 @@ class EducationStoreFactory @Inject constructor(
 
     private sealed interface Action {
         data class Loaded(
-            val wordForLearn: Int,
-            val wordForRepeat: Int,
-            val completeWord: Int
+            val countAllWords: Int,
+            val countLearnWords: Int,
+            val dayStreak: Int
         ) : Action
 
         data class LanguagesLoaded(
@@ -77,9 +83,9 @@ class EducationStoreFactory @Inject constructor(
 
     private sealed interface Msg {
         data class Loaded(
-            val wordForLearn: Int,
-            val wordForRepeat: Int,
-            val completeWord: Int
+            val countAllWords: Int,
+            val countLearnWords: Int,
+            val dayStreak: Int
         ) : Msg
 
         data class LanguageLoaded(
@@ -90,12 +96,27 @@ class EducationStoreFactory @Inject constructor(
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-                getLanguageUseCase().collect {
-                    dispatch(Action.LanguagesLoaded(it))
+
+                launch {
+                    getLanguageUseCase().collect {
+                        dispatch(Action.LanguagesLoaded(it))
+                    }
+                }
+
+                launch {
+                    combine(
+                        getCountAllWordsUseCase.invoke(),
+                        getCountRepeatWordsUseCase.invoke(),
+                        flow {
+                            emit(1)
+                        }
+                    ) { countAll, countRepeat, day ->
+                        Action.Loaded(countAll, countRepeat, day)
+                    }.collect {
+                        dispatch(it)
+                    }
                 }
             }
-
-            //todo loading from room
         }
     }
 
@@ -126,6 +147,16 @@ class EducationStoreFactory @Inject constructor(
                     dispatch(Msg.LanguageLoaded(action.language))
                 }
 
+                is Action.Loaded -> {
+                    dispatch(
+                        Msg.Loaded(
+                            countAllWords = action.countAllWords,
+                            countLearnWords = action.countLearnWords,
+                            dayStreak = action.dayStreak
+                        )
+                    )
+                }
+
                 else -> {}
             }
         }
@@ -136,9 +167,9 @@ class EducationStoreFactory @Inject constructor(
             is Msg.Loaded -> {
                 copy(
                     statisticState = State.StatisticState.Loaded(
-                        msg.wordForLearn,
-                        msg.wordForRepeat,
-                        msg.completeWord,
+                        msg.countAllWords,
+                        msg.countLearnWords,
+                        msg.dayStreak,
                     )
                 )
             }

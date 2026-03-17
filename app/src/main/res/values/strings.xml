@@ -2,6 +2,7 @@
     <string name="app_name">MoreWords</string>
 
     <string name="learn">Учить</string>
+    <string name="day_streak">Комбо дней</string>
     <string name="know">Знаю</string>
     <string name="notKnow">Не знаю</string>
     <string name="learned">Выучено</string>
@@ -17,4 +18,6 @@
     <string name="Translate">Перевод</string>
     <string name="DublicateCard">Дублирующая карта</string>
     <string name="ChangeOriginal">Изменить оригинал</string>
+    <string name="word_learned">Слов выучено</string>
+    <string name="profile_image">Изображение профиля</string>
 </resources>

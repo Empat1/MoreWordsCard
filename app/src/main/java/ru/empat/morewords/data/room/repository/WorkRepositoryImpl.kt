@@ -1,23 +1,18 @@
 package ru.empat.morewords.data.room.repository
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import ru.empat.morewords.data.room.dao.LanguageDao
 import ru.empat.morewords.data.room.dao.WordDao
 import ru.empat.morewords.data.room.mappers.asExternalModel
-import ru.empat.morewords.data.room.mappers.toDbModel
 import ru.empat.morewords.data.room.mappers.toLanguage
 import ru.empat.morewords.data.room.mappers.toLanguageModel
 import ru.empat.morewords.data.room.mappers.toWordModel
 import ru.empat.morewords.domain.entity.Language
-import ru.empat.morewords.domain.entity.Learn
 import ru.empat.morewords.domain.entity.Word
 import ru.empat.morewords.domain.repository.WordRepository
-import java.util.Date
 import javax.inject.Inject
-import kotlin.collections.map
 
 class WorkRepositoryImpl @Inject constructor(
     private val wordDao: WordDao,
@@ -74,5 +69,13 @@ class WorkRepositoryImpl @Inject constructor(
 
     override fun getWorld(text: String): Flow<Word?> {
         return wordDao.getWordByText(text).map { it?.asExternalModel() }
+    }
+
+    override fun getCountAllWord(): Flow<Int> {
+        return wordDao.getCountAllWords()
+    }
+
+    override fun getCountRepeatWord(): Flow<Int> {
+        return wordDao.getCountRepeatWords()
     }
 }

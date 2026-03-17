@@ -41,4 +41,16 @@ interface WordDao {
             "LIMIT :limit"
     )
     fun getOldRepeatedWord(limit: Long, now: Long = Date().time): Flow<List<WordModel>?>
+
+    @Query("SELECT COUNT(*) " +
+            "FROM word"
+    )
+    fun getCountAllWords() : Flow<Int>
+
+    @Query("SELECT COUNT(*) " +
+            "FROM word " +
+            "WHERE nextReview < :now " +
+            "ORDER BY lastReviewed"
+    )
+    fun getCountRepeatWords(now: Long = Date().time) : Flow<Int>
 }

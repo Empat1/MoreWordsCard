@@ -26,4 +26,8 @@ interface WordRepository {
     fun getWordById(id: Long): Flow<Word?>
 
     fun getWorld(text: String): Flow<Word?>
+
+    fun getCountAllWord() : Flow<Int>
+
+    fun getCountRepeatWord() : Flow<Int>
 }

@@ -32,7 +32,7 @@ class LanguageDaoTest {
 
     @Test
     fun insertAndFindTest() = runTest {
-        val languageModel = LanguageModel(1, "Английски", "En")
+        val languageModel = LanguageModel(1)
         languageDao.insert(languageModel)
 
         val actual: LanguageModel = languageDao.getLanguage(1).first()
