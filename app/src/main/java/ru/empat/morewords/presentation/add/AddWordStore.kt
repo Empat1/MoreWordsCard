@@ -57,7 +57,6 @@ class AddWordStoreFactory @Inject constructor(
     private val addWordUseCase: AddWordUseCase,
     private val getWordUseCase: GetWordUseCase,
     private val validationWordUseCase: ValidationWordUseCase,
-    private val addWordUseCase: AddWordUseCase,
     private val repository: TranslateRepository //TODO usecase
 ) {
 
